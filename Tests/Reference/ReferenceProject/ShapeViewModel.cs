@@ -1,0 +1,34 @@
+﻿using ReferenceProject.Shapes;
+using SymbioticTS.Abstractions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ReferenceProject
+{
+    [TsDto]
+    public class ShapeViewModel
+    {
+        public DateTime DateCreated { get; set; }
+
+        public DateTime? DateUpdated { get; set; }
+
+        [TsProperty(name: "AllShapes")]
+        public IShape[] Shapes { get; set; }
+
+        public int TotalShapes => this.Shapes?.Length ?? 0;
+
+        public IEnumerable<Rectangle> Rectangles => this.Shapes?
+            .Where(s => s is Rectangle)
+            .Cast<Rectangle>();
+
+        public int? TotalRectangles => this.Rectangles?.Count();
+
+        public IReadOnlyList<Circle> Circles => this.Shapes?
+            .Where(s => s is Circle)
+            .Cast<Circle>()
+            .ToList();
+
+        public long TotalCircles => this.Circles?.Count ?? 0;
+    }
+}
