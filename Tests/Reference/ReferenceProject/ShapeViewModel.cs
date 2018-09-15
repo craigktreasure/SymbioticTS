@@ -1,19 +1,13 @@
 ﻿using ReferenceProject.Shapes;
 using SymbioticTS.Abstractions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ReferenceProject
 {
     [TsDto]
-    public class ShapeViewModel
+    public class ShapeViewModel : BaseViewModel
     {
-        public DateTime DateCreated { get; set; }
-
-        public DateTime? DateUpdated { get; set; }
-
-        [TsProperty(name: "AllShapes")]
         public IShape[] Shapes { get; set; }
 
         public int TotalShapes => this.Shapes?.Length ?? 0;

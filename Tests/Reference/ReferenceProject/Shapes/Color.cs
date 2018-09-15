@@ -1,4 +1,4 @@
-﻿namespace ReferenceProject
+﻿namespace ReferenceProject.Shapes
 {
     public enum Color
     {
