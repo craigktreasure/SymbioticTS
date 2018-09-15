@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>net472;netcoreapp2.1</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -14,6 +14,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SymbioticTS.Core\SymbioticTS.Core.csproj" />
+    <ProjectReference Include="..\Reference\DiscoveryReferenceProjectWithReference\DiscoveryReferenceProjectWithReference.csproj" />
+    <ProjectReference Include="..\Reference\DiscoveryReferenceProject\DiscoveryReferenceProject.csproj" />
+    <ProjectReference Include="..\Reference\ReferenceProject\ReferenceProject.csproj" />
   </ItemGroup>
 
 </Project>
