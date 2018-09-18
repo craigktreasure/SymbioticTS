@@ -1,4 +1,4 @@
-﻿using SymbioticTS.Abstractions;
+using SymbioticTS.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,13 +97,6 @@ namespace SymbioticTS.Core
                 yield break;
             }
 
-            yield return type;
-
-            if (type.IsEnum)
-            {
-                yield break;
-            }
-
             foreach (Type baseSupportingType in DiscoverSupportingTypes(type.BaseType))
             {
                 yield return baseSupportingType;
@@ -118,6 +111,8 @@ namespace SymbioticTS.Core
             {
                 yield return propertySupportingType;
             }
+
+            yield return type;
         }
 
         private static bool HasSymbioticTSAbstractionsReference(Assembly assembly)
