@@ -5,10 +5,10 @@ namespace ReferenceProject.Shapes
     [TsInterface]
     public interface IShape
     {
-        [TsProperty(PropertyOptions.Optional)]
+        [TsProperty(IsOptional = TsPropertyValueOptions.Yes)]
         Border Border { get; }
 
-        [TsProperty(PropertyOptions.ReadOnly)]
+        [TsProperty(IsReadOnly = TsPropertyValueOptions.Yes)]
         Color Color { get; }
 
         int Sides { get; }

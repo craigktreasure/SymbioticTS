@@ -3,7 +3,7 @@
 namespace SymbioticTS.Abstractions
 {
     [AttributeUsage(AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
-    public class TsInterfaceAttribute : Attribute
+    public class TsInterfaceAttribute : Attribute, ITsNameableAttribute, ITsFlattenableAttribute
     {
         /// <summary>
         /// Gets the name of the TypeScript object generated.

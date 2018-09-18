@@ -6,18 +6,21 @@ namespace SymbioticTS.Abstractions
     public class TsPropertyAttribute : Attribute
     {
         /// <summary>
-        /// Gets the property options.
+        /// Gets or sets a value indicating whether or not the property is read only.
         /// </summary>
-        /// <value>The options.</value>
-        public PropertyOptions Options { get; }
+        public TsPropertyValueOptions IsReadOnly { get; set; } = TsPropertyValueOptions.Auto;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the property is optional.
+        /// </summary>
+        public TsPropertyValueOptions IsOptional { get; set; } = TsPropertyValueOptions.Auto;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TsPropertyAttribute" /> class.
         /// </summary>
         /// <param name="options">The property options.</param>
-        public TsPropertyAttribute(PropertyOptions options = PropertyOptions.Auto)
+        public TsPropertyAttribute()
         {
-            this.Options = options;
         }
     }
 }

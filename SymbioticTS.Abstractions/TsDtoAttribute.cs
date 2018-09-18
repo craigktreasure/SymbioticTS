@@ -3,7 +3,7 @@
 namespace SymbioticTS.Abstractions
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class TsDtoAttribute : Attribute
+    public class TsDtoAttribute : Attribute, ITsNameableAttribute, ITsFlattenableAttribute
     {
         /// <summary>
         /// Gets the names of the TypeScript objects generated.
