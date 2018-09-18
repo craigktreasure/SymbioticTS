@@ -3,7 +3,7 @@
 namespace SymbioticTS.Abstractions
 {
     [AttributeUsage(AttributeTargets.Enum, AllowMultiple = false, Inherited = false)]
-    public class TsEnumAttribute : Attribute
+    public class TsEnumAttribute : Attribute, ITsNameableAttribute
     {
         /// <summary>
         /// Gets the name of the TypeScript object generated.
