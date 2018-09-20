@@ -21,6 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscoveryReferenceProject",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscoveryReferenceProjectWithReference", "Tests\Reference\DiscoveryReferenceProjectWithReference\DiscoveryReferenceProjectWithReference.csproj", "{39FC1931-1C22-4B06-919B-CDF3359F66CC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4E607303-D7E2-469A-A677-9A79F0B9A6DD}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
