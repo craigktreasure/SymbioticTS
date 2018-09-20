@@ -1,5 +1,7 @@
 # SymbioticTS
 
+[![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/craigktreasure.SymbioticTS)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=13)
+
 ## Status: Planning
 
 This project is not yet "real" and is currently being planned and developed.
