@@ -1,0 +1,28 @@
+# ASP.NET Core
+# Build and test ASP.NET Core web applications targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/vsts/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+  buildConfiguration: 'Release'
+  dotnetSdkVersion: '2.1.402'
+
+steps:
+- task: DotNetCoreInstaller@0
+  displayName: Install .NET Core SDK $(dotnetSdkVersion)
+  inputs:
+    version: $(dotnetSdkVersion)
+
+- script: dotnet build --configuration $(buildConfiguration)
+  displayName: 'dotnet build $(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: dotnet test $(buildConfiguration)
+  inputs:
+    command: test
+    projects: '**/*.Tests.csproj'
+    publishTestResults: true
+    arguments: '--no-build --no-restore -c $(buildConfiguration)'
