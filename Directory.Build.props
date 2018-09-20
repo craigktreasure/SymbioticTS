@@ -4,6 +4,13 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 
     <LangVersion>Latest</LangVersion>
+
+    <authors>Craig Treasure</authors>
+    <owners>craigktreasure</owners>
+    <PackageTags>typescript dotnet dotnetcore aspnetcore</PackageTags>
+    <PackageProjectUrl>https://github.com/craigktreasure/SymbioticTS</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/craigktreasure/SymbioticTS.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <Import Project=".\Project.Dependencies.props" />
