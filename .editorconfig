@@ -25,9 +25,6 @@ indent_size = 4
 
 #Formatting - new line options
 
-#require braces to be on a new line for types, control_blocks, and methods (also known as "Allman" style)
-csharp_new_line_before_open_brace = types, control_blocks, methods
-
 #Formatting - organize using options
 
 #do not place System.* using directives before other using directives
@@ -61,8 +58,6 @@ csharp_preserve_single_line_blocks = true
 
 #prefer block bodies for constructors
 csharp_style_expression_bodied_constructors = false:suggestion
-#prefer block bodies for methods
-csharp_style_expression_bodied_methods = false:suggestion
 #prefer expression-bodied members for properties
 csharp_style_expression_bodied_properties = true:suggestion
 
