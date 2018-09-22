@@ -1,12 +1,11 @@
-﻿using SymbioticTS.Abstractions;
+using SymbioticTS.Abstractions;
 
 namespace ReferenceProject.Shapes
 {
     [TsClass(flattenInheritance: true)]
-    internal class Triangle : BaseShape
+    internal class Triangle : TrilateralBase, ITrilateral
     {
         public Triangle(Color color)
-            : base(3)
         {
             this.Color = color;
         }
