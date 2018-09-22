@@ -1,7 +1,5 @@
-using SymbioticTS.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace SymbioticTS.Core
@@ -43,6 +41,12 @@ namespace SymbioticTS.Core
         /// </summary>
         /// <value>The type of the element.</value>
         public TsTypeSymbol ElementType { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the type was explicitly opted into.
+        /// </summary>
+        /// <value><c>true</c> if explicitly opted into; otherwise, <c>false</c>.</value>
+        public bool ExplicitOptIn => this.TypeMetadata?.ExplicitOptIn ?? false;
 
         /// <summary>
         /// Gets the interfaces.
@@ -93,30 +97,40 @@ namespace SymbioticTS.Core
         public TsSymbolType Type { get; }
 
         /// <summary>
+        /// Gets the type metadata.
+        /// </summary>
+        /// <value>The type metadata.</value>
+        internal TsTypeMetadata TypeMetadata { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="TsTypeSymbol"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="symbolType">Type type of the symbol.</param>
-        public TsTypeSymbol(string name, TsSymbolType symbolType)
-            : this(name, symbolType, null, new TsTypeSymbol[0], new TsPropertySymbol[0])
+        internal TsTypeSymbol(string name, TsSymbolType symbolType)
+            : this(name, symbolType, null, new TsTypeSymbol[0], new TsPropertySymbol[0], null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TsTypeSymbol"/> class.
+        /// Initializes a new instance of the <see cref="TsTypeSymbol" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="symbolType">The type of the symbol.</param>
         /// <param name="baseTypeSymbol">The base type symbol.</param>
         /// <param name="interfaceTypeSymbols">The interface type symbols.</param>
         /// <param name="propertySymbols">The property symbols.</param>
-        public TsTypeSymbol(string name, TsSymbolType symbolType, TsTypeSymbol baseTypeSymbol, IReadOnlyList<TsTypeSymbol> interfaceTypeSymbols, IReadOnlyList<TsPropertySymbol> propertySymbols)
+        /// <param name="typeMetadata">The type metadata.</param>
+        internal TsTypeSymbol(string name, TsSymbolType symbolType, TsTypeSymbol baseTypeSymbol,
+            IReadOnlyList<TsTypeSymbol> interfaceTypeSymbols, IReadOnlyList<TsPropertySymbol> propertySymbols,
+            TsTypeMetadata typeMetadata)
         {
             this.Name = name;
             this.Type = symbolType;
             this.Base = baseTypeSymbol;
             this.Interfaces = interfaceTypeSymbols;
             this.Properties = propertySymbols;
+            this.TypeMetadata = typeMetadata;
         }
 
         /// <summary>
@@ -124,7 +138,7 @@ namespace SymbioticTS.Core
         /// </summary>
         /// <param name="elementType">The type of the element.</param>
         /// <returns>A <see cref="TsTypeSymbol"/>.</returns>
-        public static TsTypeSymbol CreateArraySymbol(TsTypeSymbol elementType)
+        internal static TsTypeSymbol CreateArraySymbol(TsTypeSymbol elementType)
         {
             return new TsTypeSymbol(nameof(TsSymbolType.Array), TsSymbolType.Array)
             {
@@ -138,93 +152,67 @@ namespace SymbioticTS.Core
         /// <param name="type">The type.</param>
         /// <param name="symbolLookup">The symbol lookup.</param>
         /// <returns>A <see cref="TsTypeSymbol"/>.</returns>
-        public static TsTypeSymbol LoadFrom(Type type, TsSymbolLookup symbolLookup)
+        internal static TsTypeSymbol LoadFrom(Type type, TsSymbolLookup symbolLookup)
         {
-            Attribute attribute = GetAttribute(type);
+            TsTypeMetadata typeMetadata = TsTypeMetadata.LoadFrom(type);
 
+            return LoadFrom(typeMetadata, symbolLookup);
+        }
+
+        /// <summary>
+        /// Loads a <see cref="TsTypeSymbol"/> from the specified <see cref="TsTypeMetadata"/> using the <see cref="TsSymbolLookup"/>.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="symbolLookup">The symbol lookup.</param>
+        /// <returns>A <see cref="TsTypeSymbol"/>.</returns>
+        internal static TsTypeSymbol LoadFrom(TsTypeMetadata typeMetadata, TsSymbolLookup symbolLookup)
+        {
             TsTypeSymbol baseTypeSymbol = null;
-            if (type.BaseType != null)
+            if (!typeMetadata.Flatten && typeMetadata.Type.BaseType != null)
             {
-                symbolLookup.TryResolveSymbol(type.BaseType, out baseTypeSymbol);
+                symbolLookup.TryResolveSymbol(typeMetadata.Type.BaseType, out baseTypeSymbol);
             }
 
             List<TsTypeSymbol> interfaceTypeSymbols = new List<TsTypeSymbol>();
-            foreach (Type interfaceType in type.GetInterfaces())
+            if (!typeMetadata.Flatten)
             {
-                if (symbolLookup.TryResolveSymbol(interfaceType, out TsTypeSymbol interfaceTypeSymbol))
+                foreach (Type interfaceType in typeMetadata.Type.GetInterfaces())
                 {
-                    interfaceTypeSymbols.Add(interfaceTypeSymbol);
+                    if (symbolLookup.TryResolveSymbol(interfaceType, out TsTypeSymbol interfaceTypeSymbol))
+                    {
+                        interfaceTypeSymbols.Add(interfaceTypeSymbol);
+                    }
                 }
             }
 
             List<TsPropertySymbol> propertySymbols = new List<TsPropertySymbol>();
-            foreach (PropertyInfo property in GetProperties(type, ShouldFlattenInheritance(attribute)))
+            foreach (PropertyInfo property in typeMetadata.GetProperties())
             {
                 propertySymbols.Add(TsPropertySymbol.LoadFrom(property, symbolLookup));
             }
 
             TsTypeSymbol symbol = new TsTypeSymbol
             (
-                name: GetTypeName(type, attribute),
-                symbolType: GetSymbolType(type),
+                name: typeMetadata.Name,
+                symbolType: GetSymbolType(typeMetadata),
                 baseTypeSymbol,
                 interfaceTypeSymbols,
-                propertySymbols
+                propertySymbols,
+                typeMetadata
             );
 
             return symbol;
         }
 
         /// <summary>
-        /// Gets the attribute.
+        /// Gets the type of the symbol.
         /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>Attribute.</returns>
-        /// <exception cref="NotSupportedException">The type {type.FullName}</exception>
-        private static Attribute GetAttribute(Type type)
+        /// <param name="typeMetadata">The type metadata.</param>
+        /// <returns>A <see cref="TsSymbolType" />.</returns>
+        /// <exception cref="InvalidOperationException">Could not determine the type of {type.FullName}</exception>
+        private static TsSymbolType GetSymbolType(TsTypeMetadata typeMetadata)
         {
-            IReadOnlyList<Attribute> attributes = GetAttributes(type).Apply();
-
-            if (attributes.Count > 1)
-            {
-                throw new NotSupportedException($"The type {type.FullName} has more than one Ts attribute applied, which is not allowed.");
-            }
-
-            return attributes.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets the attributes.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>IEnumerable&lt;Attribute&gt;.</returns>
-        private static IEnumerable<Attribute> GetAttributes(Type type)
-        {
-            return new Attribute[]
-            {
-                type.GetTypeInfo().GetCustomAttribute<TsClassAttribute>(),
-                type.GetTypeInfo().GetCustomAttribute<TsDtoAttribute>(),
-                type.GetTypeInfo().GetCustomAttribute<TsEnumAttribute>(),
-                type.GetTypeInfo().GetCustomAttribute<TsInterfaceAttribute>(),
-            }.Where(a => a != null);
-        }
-
-        /// <summary>
-        /// Gets the properties.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="flat">if set to <c>true</c> [flat].</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="PropertyInfo"/>.</returns>
-        private static IEnumerable<PropertyInfo> GetProperties(Type type, bool flat)
-        {
-            BindingFlags propertyBindingFlags = BindingFlags.Public | BindingFlags.Instance;
-
-            if (!flat)
-            {
-                propertyBindingFlags |= BindingFlags.DeclaredOnly;
-            }
-
-            return type.GetProperties(propertyBindingFlags);
+            return GetSymbolType(typeMetadata.Type);
         }
 
         /// <summary>
@@ -255,43 +243,6 @@ namespace SymbioticTS.Core
             {
                 throw new InvalidOperationException($"Could not determine the type of {type.FullName}.");
             }
-        }
-
-        /// <summary>
-        /// Gets the name of the type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="attribute">The attribute.</param>
-        /// <returns>A <see cref="String"/>.</returns>
-        /// <exception cref="InvalidOperationException">The name value applied to the type {type.FullName}</exception>
-        private static string GetTypeName(Type type, Attribute attribute)
-        {
-            if (attribute is ITsNameableAttribute nameableAttribute)
-            {
-                if (nameableAttribute.Name != null && string.IsNullOrWhiteSpace(nameableAttribute.Name))
-                {
-                    throw new InvalidOperationException($"The name value applied to the type {type.FullName} is not valid.");
-                }
-
-                return nameableAttribute.Name ?? type.Name;
-            }
-
-            return type.Name;
-        }
-
-        /// <summary>
-        /// Should flatten inheritance.
-        /// </summary>
-        /// <param name="attribute">The attribute.</param>
-        /// <returns><c>true</c> if the attribute indicates that the object should be flattened, <c>false</c> otherwise.</returns>
-        private static bool ShouldFlattenInheritance(Attribute attribute)
-        {
-            if (attribute is ITsFlattenableAttribute flattenableAttribute)
-            {
-                return flattenableAttribute.FlattenInheritance;
-            }
-
-            return false;
         }
     }
 }
