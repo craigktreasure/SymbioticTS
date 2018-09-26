@@ -1,8 +1,9 @@
-﻿using SymbioticTS.Abstractions;
+using SymbioticTS.Abstractions;
 
 namespace DiscoveryReferenceProject
 {
-    [TsClass]
+    // Generics are not currently supported
+    // [TsClass]
     public class ClassWithUnannotatedGenericBase : ClassWithUnannotatedGenericBaseBase<ClassWithUnannotatedGenericBaseBaseGeneric>
     {
     }

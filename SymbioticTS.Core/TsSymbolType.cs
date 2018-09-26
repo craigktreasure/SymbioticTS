@@ -2,6 +2,7 @@ namespace SymbioticTS.Core
 {
     internal enum TsSymbolType
     {
+        Any,
         Array,
         Boolean,
         Class,
@@ -10,5 +11,6 @@ namespace SymbioticTS.Core
         Interface,
         Number,
         String,
+        Unknown,
     }
 }

@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SymbioticTS.Core
 {
@@ -8,6 +8,7 @@ namespace SymbioticTS.Core
     {
         private readonly IDictionary<Type, TsTypeSymbol> lookup = new Dictionary<Type, TsTypeSymbol>
         {
+            [typeof(object)] = TsTypeSymbol.Any,
             [typeof(bool)] = TsTypeSymbol.Boolean,
             [typeof(short)] = TsTypeSymbol.Number,
             [typeof(ushort)] = TsTypeSymbol.Number,
@@ -83,6 +84,11 @@ namespace SymbioticTS.Core
 
             if (type.IsArray)
             {
+                if (type.GetArrayRank() != 1)
+                {
+                    return false;
+                }
+
                 if (!this.TryResolveSymbol(type.GetElementType(), out TsTypeSymbol elementSymbol))
                 {
                     return false;
@@ -92,17 +98,26 @@ namespace SymbioticTS.Core
                 return true;
             }
 
-            if (type != typeof(string) && type.IsAssignableTo(typeof(IEnumerable)))
+            if (type.IsConstructedGenericType)
             {
-                Type[] genericTypes = type.GetGenericArguments();
-
-                if (!this.TryResolveSymbol(genericTypes[0], out TsTypeSymbol elementSymbol))
+                Type typeDefinition = type.GetGenericTypeDefinition();
+                if (typeDefinition == typeof(IEnumerable<>)
+                    || typeDefinition == typeof(ICollection<>)
+                    || typeDefinition == typeof(IList<>)
+                    || typeDefinition == typeof(IReadOnlyCollection<>)
+                    || typeDefinition == typeof(IReadOnlyList<>)
+                    || typeDefinition == typeof(List<>))
                 {
-                    return false;
-                }
+                    Type genericType = type.GetGenericArguments().Single();
 
-                symbol = TsTypeSymbol.CreateArraySymbol(elementSymbol);
-                return true;
+                    if (!this.TryResolveSymbol(genericType, out TsTypeSymbol elementSymbol))
+                    {
+                        return false;
+                    }
+
+                    symbol = TsTypeSymbol.CreateArraySymbol(elementSymbol);
+                    return true;
+                }
             }
 
             return this.lookup.TryGetValue(type.UnwrapNullable(), out symbol);

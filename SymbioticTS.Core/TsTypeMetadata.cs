@@ -27,6 +27,18 @@ namespace SymbioticTS.Core
         public bool Flatten { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this instance is a constant enumeration.
+        /// </summary>
+        /// <value><c>true</c> if this instance is a constant enumeration; otherwise, <c>false</c>.</value>
+        public bool IsConstantEnum => this.IsEnum && ((this.Attribute as TsEnumAttribute)?.AsConstant ?? false);
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is an enumeration.
+        /// </summary>
+        /// <value><c>true</c> if this instance is an enumeration; otherwise, <c>false</c>.</value>
+        public bool IsEnum => this.Type.IsEnum;
+
+        /// <summary>
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>

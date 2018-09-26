@@ -1,4 +1,4 @@
-﻿using SymbioticTS.Abstractions;
+using SymbioticTS.Abstractions;
 using System.Collections.Generic;
 
 namespace DiscoveryReferenceProject
