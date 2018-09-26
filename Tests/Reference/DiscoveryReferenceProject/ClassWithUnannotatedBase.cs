@@ -1,4 +1,4 @@
-﻿using SymbioticTS.Abstractions;
+using SymbioticTS.Abstractions;
 
 namespace DiscoveryReferenceProject
 {
@@ -7,7 +7,7 @@ namespace DiscoveryReferenceProject
     {
     }
 
-    public class ClassWithUnannotatedBaseBase
+    public abstract class ClassWithUnannotatedBaseBase
     {
     }
 }

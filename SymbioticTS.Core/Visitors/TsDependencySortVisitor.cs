@@ -10,6 +10,11 @@ namespace SymbioticTS.Core.Visitors
 
         private List<Type> orderedTypes;
 
+        /// <summary>
+        /// Sorts the specified types.
+        /// </summary>
+        /// <param name="types">The types.</param>
+        /// <returns><see cref="IReadOnlyList{T}"/> of <see cref="Type"/>.</returns>
         public IReadOnlyList<Type> Sort(IEnumerable<Type> types)
         {
             IReadOnlyList<Type> allTypes = types.Apply();
@@ -27,6 +32,10 @@ namespace SymbioticTS.Core.Visitors
             return this.orderedTypes;
         }
 
+        /// <summary>
+        /// Visits the type.
+        /// </summary>
+        /// <param name="type">The type.</param>
         protected override void VisitType(Type type)
         {
             base.VisitType(type);

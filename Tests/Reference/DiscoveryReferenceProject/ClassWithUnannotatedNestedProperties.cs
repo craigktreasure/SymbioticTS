@@ -1,4 +1,4 @@
-﻿using SymbioticTS.Abstractions;
+using SymbioticTS.Abstractions;
 
 namespace DiscoveryReferenceProject
 {
@@ -11,15 +11,15 @@ namespace DiscoveryReferenceProject
 
         public class UnannotatedClass
         {
-            public UnannotatedPropertyEnum Enum { get; set; }
+            public UnannotatedPropertyEnum EnumProperty { get; set; }
 
-            public IUnannotatedPropertyInterface Interface { get; set; }
+            public IUnannotatedPropertyInterface InterfaceProperty { get; set; }
 
-            public UnannotatedPropertyClass Property { get; set; }
+            public UnannotatedPropertyClass ClassProperty { get; set; }
         }
 
         public class UnannotatedPropertyClass { }
 
-        public UnannotatedClass Property { get; set; }
+        public UnannotatedClass ClassProperty { get; set; }
     }
 }

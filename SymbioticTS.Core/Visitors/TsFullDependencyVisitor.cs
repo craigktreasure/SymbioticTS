@@ -12,6 +12,11 @@ namespace SymbioticTS.Core.Visitors
         private Type currentType;
         private List<Type> currentTypeDependencies;
 
+        /// <summary>
+        /// Gets all of the types associated with the specified list of types.
+        /// </summary>
+        /// <param name="types">The types.</param>
+        /// <returns><see cref="IReadOnlyList{T}"/> of <see cref="Type"/>.</returns>
         public IReadOnlyList<Type> GetAllTypes(IEnumerable<Type> types)
         {
             IReadOnlyList<Type> allTypes = types.Distinct().Apply();
@@ -36,6 +41,10 @@ namespace SymbioticTS.Core.Visitors
             return allTypes;
         }
 
+        /// <summary>
+        /// Visits the type.
+        /// </summary>
+        /// <param name="type">The type.</param>
         protected override void VisitType(Type type)
         {
             if (type != this.currentType && !type.IsNetFramework())

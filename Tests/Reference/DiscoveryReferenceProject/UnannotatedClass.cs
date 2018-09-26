@@ -1,9 +1,6 @@
-using SymbioticTS.Abstractions;
-
 namespace DiscoveryReferenceProject
 {
-    [TsClass]
-    public class AnnotatedClass
+    public class UnannotatedClass
     {
         public bool Property { get; set; }
     }

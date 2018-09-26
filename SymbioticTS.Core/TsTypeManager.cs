@@ -8,6 +8,25 @@ namespace SymbioticTS.Core
 {
     internal class TsTypeManager
     {
+        private readonly TsTypeManagerOptions options;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TsTypeManager"/> class.
+        /// </summary>
+        public TsTypeManager()
+            : this(TsTypeManagerOptions.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TsTypeManager"/> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        public TsTypeManager(TsTypeManagerOptions options)
+        {
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
+        }
+
         /// <summary>
         /// Resolves the assemblies that may contain TypeScript objects.
         /// </summary>
@@ -62,7 +81,7 @@ namespace SymbioticTS.Core
 
             foreach (Type type in sortedTypes)
             {
-                TsTypeSymbol symbol = TsTypeSymbol.LoadFrom(type, symbolLookup);
+                TsTypeSymbol symbol = TsTypeSymbol.LoadFrom(type, symbolLookup, this.options);
 
                 symbolLookup.Add(type, symbol);
                 results.Add(symbol);
