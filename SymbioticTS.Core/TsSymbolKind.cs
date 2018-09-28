@@ -1,6 +1,6 @@
 namespace SymbioticTS.Core
 {
-    internal enum TsSymbolType
+    internal enum TsSymbolKind
     {
         Any,
         Array,

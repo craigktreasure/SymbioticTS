@@ -12,32 +12,32 @@ namespace SymbioticTS.Core
         /// <summary>
         /// Gets the any <see cref="TsTypeSymbol"/>.
         /// </summary>
-        public static TsTypeSymbol Any { get; } = new TsTypeSymbol("any", TsSymbolType.Any);
+        public static TsTypeSymbol Any { get; } = new TsTypeSymbol("any", TsSymbolKind.Any);
 
         /// <summary>
         /// Gets the boolean <see cref="TsTypeSymbol"/>.
         /// </summary>
-        public static TsTypeSymbol Boolean { get; } = new TsTypeSymbol("boolean", TsSymbolType.Boolean);
+        public static TsTypeSymbol Boolean { get; } = new TsTypeSymbol("boolean", TsSymbolKind.Boolean);
 
         /// <summary>
         /// Gets the Date <see cref="TsTypeSymbol"/>.
         /// </summary>
-        public static TsTypeSymbol Date { get; } = new TsTypeSymbol("Date", TsSymbolType.Date);
+        public static TsTypeSymbol Date { get; } = new TsTypeSymbol("Date", TsSymbolKind.Date);
 
         /// <summary>
         /// Gets the number <see cref="TsTypeSymbol"/>.
         /// </summary>
-        public static TsTypeSymbol Number { get; } = new TsTypeSymbol("number", TsSymbolType.Number);
+        public static TsTypeSymbol Number { get; } = new TsTypeSymbol("number", TsSymbolKind.Number);
 
         /// <summary>
         /// Gets the string <see cref="TsTypeSymbol"/>.
         /// </summary>
-        public static TsTypeSymbol String { get; } = new TsTypeSymbol("string", TsSymbolType.String);
+        public static TsTypeSymbol String { get; } = new TsTypeSymbol("string", TsSymbolKind.String);
 
         /// <summary>
         /// Gets the unknown <see cref="TsTypeSymbol"/>.
         /// </summary>
-        public static TsTypeSymbol Unknown { get; } = new TsTypeSymbol("unknown", TsSymbolType.Unknown);
+        public static TsTypeSymbol Unknown { get; } = new TsTypeSymbol("unknown", TsSymbolKind.Unknown);
 
         /// <summary>
         /// Gets the base <see cref="TsTypeSymbol"/>.
@@ -72,13 +72,13 @@ namespace SymbioticTS.Core
         /// Gets a value indicating whether this instance is an array.
         /// </summary>
         /// <value><c>true</c> if this instance is array; otherwise, <c>false</c>.</value>
-        public bool IsArray => this.Type == TsSymbolType.Array;
+        public bool IsArray => this.Kind == TsSymbolKind.Array;
 
         /// <summary>
         /// Gets a value indicating whether this instance is a class.
         /// </summary>
         /// <value><c>true</c> if this instance is class; otherwise, <c>false</c>.</value>
-        public bool IsClass => this.Type == TsSymbolType.Class;
+        public bool IsClass => this.Kind == TsSymbolKind.Class;
 
         /// <summary>
         /// Gets a value indicating whether this instance is a constant enumeration.
@@ -90,13 +90,13 @@ namespace SymbioticTS.Core
         /// Gets a value indicating whether this instance is an enumeration.
         /// </summary>
         /// <value><c>true</c> if this instance is an enumeration; otherwise, <c>false</c>.</value>
-        public bool IsEnum => this.Type == TsSymbolType.Enum;
+        public bool IsEnum => this.Kind == TsSymbolKind.Enum;
 
         /// <summary>
         /// Gets a value indicating whether this instance is an interface.
         /// </summary>
         /// <value><c>true</c> if this instance is interface; otherwise, <c>false</c>.</value>
-        public bool IsInterface => this.Type == TsSymbolType.Interface;
+        public bool IsInterface => this.Kind == TsSymbolKind.Interface;
 
         /// <summary>
         /// Gets a value indicating whether this symbol is primitive.
@@ -107,6 +107,11 @@ namespace SymbioticTS.Core
             || this == Number
             || this == Date
             || this == String;
+
+        /// <summary>
+        /// Gets the symbol kind.
+        /// </summary>
+        public TsSymbolKind Kind { get; }
 
         /// <summary>
         /// Gets the name.
@@ -121,12 +126,6 @@ namespace SymbioticTS.Core
         public IReadOnlyList<TsPropertySymbol> Properties { get; }
 
         /// <summary>
-        /// Gets the type.
-        /// </summary>
-        /// <value>The type.</value>
-        public TsSymbolType Type { get; }
-
-        /// <summary>
         /// Gets the type metadata.
         /// </summary>
         /// <value>The type metadata.</value>
@@ -136,9 +135,9 @@ namespace SymbioticTS.Core
         /// Initializes a new instance of the <see cref="TsTypeSymbol"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="symbolType">Type type of the symbol.</param>
-        internal TsTypeSymbol(string name, TsSymbolType symbolType)
-            : this(name, symbolType, null, new TsTypeSymbol[0], new TsPropertySymbol[0], null)
+        /// <param name="symbolKind">The kind of symbol.</param>
+        internal TsTypeSymbol(string name, TsSymbolKind symbolKind)
+            : this(name, symbolKind, null, new TsTypeSymbol[0], new TsPropertySymbol[0], null)
         {
         }
 
@@ -146,17 +145,17 @@ namespace SymbioticTS.Core
         /// Initializes a new instance of the <see cref="TsTypeSymbol" /> class.
         /// </summary>
         /// <param name="name">The name.</param>
-        /// <param name="symbolType">The type of the symbol.</param>
+        /// <param name="symbolKind">The kind of symbol.</param>
         /// <param name="baseTypeSymbol">The base type symbol.</param>
         /// <param name="interfaceTypeSymbols">The interface type symbols.</param>
         /// <param name="propertySymbols">The property symbols.</param>
         /// <param name="typeMetadata">The type metadata.</param>
-        internal TsTypeSymbol(string name, TsSymbolType symbolType, TsTypeSymbol baseTypeSymbol,
+        internal TsTypeSymbol(string name, TsSymbolKind symbolKind, TsTypeSymbol baseTypeSymbol,
             IReadOnlyList<TsTypeSymbol> interfaceTypeSymbols, IReadOnlyList<TsPropertySymbol> propertySymbols,
             TsTypeMetadata typeMetadata)
         {
             this.Name = name;
-            this.Type = symbolType;
+            this.Kind = symbolKind;
             this.Base = baseTypeSymbol;
             this.Interfaces = interfaceTypeSymbols;
             this.Properties = propertySymbols;
@@ -185,14 +184,14 @@ namespace SymbioticTS.Core
         /// <returns>A <see cref="TsTypeSymbol"/>.</returns>
         internal static TsTypeSymbol CreateArraySymbol(TsTypeSymbol elementType)
         {
-            return new TsTypeSymbol($"{elementType.Name}[]", TsSymbolType.Array)
+            return new TsTypeSymbol($"{elementType.Name}[]", TsSymbolKind.Array)
             {
                 ElementType = elementType
             };
         }
 
         /// <summary>
-        /// Loads a <see cref="TsTypeSymbol" /> from the specified <see cref="Type" /> using the <see cref="TsSymbolLookup" />.
+        /// Loads a <see cref="TsTypeSymbol" /> from the specified <see cref="Kind" /> using the <see cref="TsSymbolLookup" />.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="symbolLookup">The symbol lookup.</param>
@@ -249,7 +248,7 @@ namespace SymbioticTS.Core
             TsTypeSymbol symbol = new TsTypeSymbol
             (
                 name: typeMetadata.Name,
-                symbolType: GetSymbolType(typeMetadata),
+                symbolKind: GetSymbolKind(typeMetadata),
                 baseTypeSymbol,
                 interfaceTypeSymbols,
                 propertySymbols,
@@ -260,43 +259,41 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
-        /// Gets the type of the symbol.
+        /// Gets the <see cref="TsSymbolKind"/> of the <see cref="TsTypeMetadata"/>.
         /// </summary>
         /// <param name="typeMetadata">The type metadata.</param>
-        /// <returns>A <see cref="TsSymbolType" />.</returns>
-        /// <exception cref="InvalidOperationException">Could not determine the type of {type.FullName}</exception>
-        private static TsSymbolType GetSymbolType(TsTypeMetadata typeMetadata)
+        /// <returns>A <see cref="TsSymbolKind" />.</returns>
+        private static TsSymbolKind GetSymbolKind(TsTypeMetadata typeMetadata)
         {
-            return GetSymbolType(typeMetadata.Type);
+            return GetSymbolKind(typeMetadata.Type);
         }
 
         /// <summary>
-        /// Gets the type of the symbol.
+        /// Gets the <see cref="TsSymbolKind"/> of the <see cref="Type"/>.
         /// </summary>
         /// <param name="type">The type.</param>
-        /// <returns>A <see cref="TsSymbolType"/>.</returns>
-        /// <exception cref="InvalidOperationException">Could not determine the type of {type.FullName}</exception>
-        private static TsSymbolType GetSymbolType(Type type)
+        /// <returns>A <see cref="TsSymbolKind"/>.</returns>
+        private static TsSymbolKind GetSymbolKind(Type type)
         {
             if (type.IsClass)
             {
-                return TsSymbolType.Class;
+                return TsSymbolKind.Class;
             }
             else if (type.IsEnum)
             {
-                return TsSymbolType.Enum;
+                return TsSymbolKind.Enum;
             }
             else if (type.IsInterface)
             {
-                return TsSymbolType.Interface;
+                return TsSymbolKind.Interface;
             }
             else if (type.IsStruct() && !type.IsPrimitive)
             {
-                return TsSymbolType.Class;
+                return TsSymbolKind.Class;
             }
             else
             {
-                throw new InvalidOperationException($"Could not determine the type of {type.FullName}.");
+                throw new InvalidOperationException($"Could not determine the {nameof(TsSymbolKind)} for {type.FullName}.");
             }
         }
     }
@@ -329,7 +326,7 @@ namespace SymbioticTS.Core
             if (x.TypeMetadata == null && y.TypeMetadata == null)
             {
                 return x.Name == y.Name
-                    && x.Type == y.Type;
+                    && x.Kind == y.Kind;
             }
 
             return false;
@@ -342,7 +339,7 @@ namespace SymbioticTS.Core
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public int GetHashCode(TsTypeSymbol obj)
         {
-            return obj.TypeMetadata?.Type.GetHashCode() ?? (obj.Name, obj.Type).GetHashCode();
+            return obj.TypeMetadata?.Type.GetHashCode() ?? (obj.Name, obj.Kind).GetHashCode();
         }
     }
 }
