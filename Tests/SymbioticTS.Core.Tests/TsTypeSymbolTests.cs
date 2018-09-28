@@ -44,7 +44,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.False(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Class, symbol.Type);
+            Assert.Equal(TsSymbolKind.Class, symbol.Kind);
         }
 
         [Fact]
@@ -61,7 +61,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.True(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Class, symbol.Type);
+            Assert.Equal(TsSymbolKind.Class, symbol.Kind);
             Assert.Single(symbol.Properties);
         }
 
@@ -79,7 +79,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.True(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Interface, symbol.Type);
+            Assert.Equal(TsSymbolKind.Interface, symbol.Kind);
             Assert.Single(symbol.Properties);
         }
 
@@ -97,7 +97,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Equal(baseSymbol, symbol.Base);
             Assert.True(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Class, symbol.Type);
+            Assert.Equal(TsSymbolKind.Class, symbol.Kind);
             Assert.Empty(symbol.Properties);
         }
 
@@ -142,7 +142,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal("ShapeBorder", symbol.Name);
             Assert.Null(symbol.Base);
             Assert.True(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Enum, symbol.Type);
+            Assert.Equal(TsSymbolKind.Enum, symbol.Kind);
             Assert.True(symbol.IsConstantEnum);
 
             string[] enumNames = Enum.GetNames(type);
@@ -165,7 +165,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.True(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Class, symbol.Type);
+            Assert.Equal(TsSymbolKind.Class, symbol.Kind);
             Assert.Single(symbol.Properties);
         }
 
@@ -189,7 +189,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.False(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Enum, symbol.Type);
+            Assert.Equal(TsSymbolKind.Enum, symbol.Kind);
             Assert.False(symbol.IsConstantEnum);
 
             string[] enumNames = Enum.GetNames(type);
@@ -218,7 +218,7 @@ namespace SymbioticTS.Core.Tests
             TsTypeSymbol actualInterfaceSymbol = Assert.Single(symbol.Interfaces);
             Assert.Equal(expectedInterfaceSymbol, actualInterfaceSymbol);
             Assert.True(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Interface, symbol.Type);
+            Assert.Equal(TsSymbolKind.Interface, symbol.Kind);
         }
 
         [Fact]
@@ -232,7 +232,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.False(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Class, symbol.Type);
+            Assert.Equal(TsSymbolKind.Class, symbol.Kind);
             Assert.Single(symbol.Properties);
         }
 
@@ -247,7 +247,7 @@ namespace SymbioticTS.Core.Tests
             Assert.Equal(type.Name, symbol.Name);
             Assert.Null(symbol.Base);
             Assert.False(symbol.ExplicitOptIn);
-            Assert.Equal(TsSymbolType.Interface, symbol.Type);
+            Assert.Equal(TsSymbolKind.Interface, symbol.Kind);
             Assert.Single(symbol.Properties);
         }
     }
