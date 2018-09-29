@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbioticTS.TestLibrary", "Tests\SymbioticTS.TestLibrary\SymbioticTS.TestLibrary.csproj", "{497F6638-5F77-4D97-97E7-A4FEC5F75252}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{39FC1931-1C22-4B06-919B-CDF3359F66CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39FC1931-1C22-4B06-919B-CDF3359F66CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39FC1931-1C22-4B06-919B-CDF3359F66CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{497F6638-5F77-4D97-97E7-A4FEC5F75252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{497F6638-5F77-4D97-97E7-A4FEC5F75252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{497F6638-5F77-4D97-97E7-A4FEC5F75252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{497F6638-5F77-4D97-97E7-A4FEC5F75252}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{48720F14-9377-4AB2-ADBB-91BDD685BE46} = {B8DFD84E-38B6-422E-A5DE-66397595CB31}
 		{780F2684-7D9F-4759-8590-CBC47663CC09} = {B8DFD84E-38B6-422E-A5DE-66397595CB31}
 		{39FC1931-1C22-4B06-919B-CDF3359F66CC} = {B8DFD84E-38B6-422E-A5DE-66397595CB31}
+		{497F6638-5F77-4D97-97E7-A4FEC5F75252} = {B9760ED8-8BA4-4C20-8485-896F7387E150}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B3175479-04EF-4246-B34C-DF4901E62C35}
