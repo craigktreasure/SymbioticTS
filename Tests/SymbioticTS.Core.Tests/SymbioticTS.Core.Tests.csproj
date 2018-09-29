@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Content\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Content\**\*.ts">
+      <LogicalName>%(Identity)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
     <PackageReference Include="xunit" Version="$(XUnitVersion)" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XUnitVersion)" />
@@ -17,6 +27,7 @@
     <ProjectReference Include="..\Reference\DiscoveryReferenceProjectWithReference\DiscoveryReferenceProjectWithReference.csproj" />
     <ProjectReference Include="..\Reference\DiscoveryReferenceProject\DiscoveryReferenceProject.csproj" />
     <ProjectReference Include="..\Reference\ReferenceProject\ReferenceProject.csproj" />
+    <ProjectReference Include="..\SymbioticTS.TestLibrary\SymbioticTS.TestLibrary.csproj" />
   </ItemGroup>
 
 </Project>
