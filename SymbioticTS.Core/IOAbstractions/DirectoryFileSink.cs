@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -33,34 +33,32 @@ namespace SymbioticTS.Core.IOAbstractions
         /// Creates a file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <param name="content">The content of the file.</param>
-        public void CreateFile(string fileName, string content)
+        /// <returns>A <see cref="Stream" />.</returns>
+        public Stream CreateFile(string fileName)
         {
-            this.CreateFile(fileName, content, out _);
+            return this.CreateFile(fileName, out string _);
         }
 
         /// <summary>
         /// Creates a file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <param name="content">The content of the file.</param>
         /// <param name="filePath">The file path created.</param>
-        public void CreateFile(string fileName, string content, out string filePath)
+        /// <returns>A <see cref="Stream" />.</returns>
+        public Stream CreateFile(string fileName, out string filePath)
         {
-            string path = Path.Combine(this.directoryRoot, fileName);
+            filePath = Path.Combine(this.directoryRoot, fileName);
 
-            File.WriteAllText(path, content);
-
-            filePath = path;
+            return File.Create(filePath);
         }
 
         /// <summary>
-        /// Gets the contents of the specified file.
+        /// Opens the specified file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <returns>The file contents.</returns>
-        /// <exception cref="System.IO.FileNotFoundException">The file could not be found.</exception>
-        public string GetContents(string fileName)
+        /// <returns>The file <see cref="Stream" />.</returns>
+        /// <exception cref="FileNotFoundException">The file could not be found.</exception>
+        public Stream OpenFile(string fileName)
         {
             string path = Path.Combine(this.directoryRoot, fileName);
 
@@ -69,7 +67,7 @@ namespace SymbioticTS.Core.IOAbstractions
                 throw new FileNotFoundException("The file could not be found.", path);
             }
 
-            return File.ReadAllText(path);
+            return File.OpenRead(path);
         }
 
         /// <summary>

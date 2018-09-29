@@ -23,9 +23,19 @@ namespace SymbioticTS.TestLibrary
         /// <summary>
         /// Gets the resource.
         /// </summary>
-        /// <param name="resourceName">Name of the resource.</param>
-        /// <returns><see cref="string"/>.</returns>
-        public string GetResource(string resourceName)
+        /// <param name="resourceName">The name of the resource.</param>
+        /// <returns>A <see cref="Stream"/>.</returns>
+        public Stream GetResource(string resourceName)
+        {
+            return this.assembly.GetManifestResourceStream(resourceName);
+        }
+
+        /// <summary>
+        /// Gets the resource content.
+        /// </summary>
+        /// <param name="resourceName">The name of the resource.</param>
+        /// <returns>A <see cref="string"/>.</returns>
+        public string GetResourceContent(string resourceName)
         {
             using (Stream resourceStream = this.assembly.GetManifestResourceStream(resourceName))
             using (StreamReader streamReader = new StreamReader(resourceStream, true))

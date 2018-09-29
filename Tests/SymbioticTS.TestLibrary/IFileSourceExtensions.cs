@@ -24,7 +24,7 @@ namespace SymbioticTS.Core.Tests
 
             foreach ((string fileName, string filePath) in expectedFileMap)
             {
-                Assert.Equal(expected.GetContents(filePath), actual.GetContents(actualFileMap[fileName]));
+                Assert.Equal(expected.GetFileContent(filePath), actual.GetFileContent(actualFileMap[fileName]));
             }
         }
     }

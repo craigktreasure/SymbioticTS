@@ -10,19 +10,19 @@ namespace SymbioticTS.TestLibrary
     internal class AssemblyResourceFileSource : IFileSource
     {
         /// <summary>
-        /// The resources.
-        /// </summary>
-        private readonly HashSet<string> resources;
-
-        /// <summary>
         /// The assembly resource reader.
         /// </summary>
         private readonly AssemblyResourceReader assemblyResourceReader;
 
         /// <summary>
+        /// The resources.
+        /// </summary>
+        private readonly HashSet<string> resources;
+
+        /// <summary>
         /// Gets the files.
         /// </summary>
-        public IEnumerable<string> Files => resources;
+        public IEnumerable<string> Files => this.resources;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AssemblyResourceFileSource"/> class.
@@ -85,11 +85,12 @@ namespace SymbioticTS.TestLibrary
         }
 
         /// <summary>
-        /// Gets the contents of the specified file.
+        /// Gets the specified file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <returns>The file contents.</returns>
-        public string GetContents(string fileName)
+        /// <returns>The file <see cref="T:System.IO.Stream" />.</returns>
+        /// <exception cref="FileNotFoundException">The file could not be found.</exception>
+        public Stream OpenFile(string fileName)
         {
             if (!this.resources.Contains(fileName))
             {
