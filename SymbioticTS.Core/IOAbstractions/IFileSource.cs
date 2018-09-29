@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SymbioticTS.Core.IOAbstractions
 {
@@ -11,10 +12,10 @@ namespace SymbioticTS.Core.IOAbstractions
         IEnumerable<string> Files { get; }
 
         /// <summary>
-        /// Gets the contents of the specified file.
+        /// Opens the specified file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <returns>The file contents.</returns>
-        string GetContents(string fileName);
+        /// <returns>The file <see cref="Stream"/>.</returns>
+        Stream OpenFile(string fileName);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SymbioticTS.Core.IOAbstractions
+using System.IO;
+
+namespace SymbioticTS.Core.IOAbstractions
 {
     internal interface IFileSink
     {
@@ -6,16 +8,16 @@
         /// Creates a file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <param name="content">The content of the file.</param>
-        void CreateFile(string fileName, string content);
+        /// <returns>A <see cref="Stream"/>.</returns>
+        Stream CreateFile(string fileName);
 
         /// <summary>
         /// Creates a file.
         /// </summary>
         /// <param name="fileName">The name of the file.</param>
-        /// <param name="content">The content of the file.</param>
         /// <param name="filePath">The file path created.</param>
-        void CreateFile(string fileName, string content, out string filePath);
+        /// <returns>A <see cref="Stream"/>.</returns>
+        Stream CreateFile(string fileName, out string filePath);
 
         /// <summary>
         /// Gets an <see cref="IFileSource"/> representing the contents of the <see cref="IFileSink"/>.

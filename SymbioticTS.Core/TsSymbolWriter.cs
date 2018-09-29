@@ -279,21 +279,14 @@ namespace SymbioticTS.Core
 
         private void WriteSymbolFile(TsTypeSymbol symbol)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
-            using (SourceWriter writer = new SourceWriter(memoryStream))
-            using (StreamReader reader = new StreamReader(memoryStream, SourceWriter.DefaultEncoding))
-            {
-                string fileName = GetFileName(symbol);
+            string fileName = GetFileName(symbol);
 
+            using (Stream fileStream = this.fileSink.CreateFile(fileName))
+            using (SourceWriter writer = new SourceWriter(fileStream))
+            {
                 this.WriteHeader(writer);
                 this.WriteImports(writer, symbol);
                 this.WriteObject(writer, symbol);
-
-                writer.Flush();
-
-                memoryStream.Seek(0, SeekOrigin.Begin);
-
-                this.fileSink.CreateFile(fileName, reader.ReadToEnd());
             }
         }
     }
