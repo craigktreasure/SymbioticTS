@@ -14,22 +14,25 @@ namespace SymbioticTS.Core
 
         private readonly IFileSink fileSink;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TsSymbolWriter"/> class.
+        /// </summary>
+        /// <param name="fileSink">The file sink.</param>
         public TsSymbolWriter(IFileSink fileSink)
         {
             this.fileSink = fileSink;
         }
 
+        /// <summary>
+        /// Writes the symbols.
+        /// </summary>
+        /// <param name="symbols">The symbols.</param>
         public void WriteSymbols(IEnumerable<TsTypeSymbol> symbols)
         {
             foreach (TsTypeSymbol symbol in symbols)
             {
                 this.WriteSymbolFile(symbol);
             }
-        }
-
-        private static string GetFileName(TsTypeSymbol symbol)
-        {
-            return symbol.Name + ".ts";
         }
 
         private static IEnumerable<(TsPropertySymbol property, string parameterName)> GetConstructorParameters(IEnumerable<TsPropertySymbol> propertySymbols)
@@ -40,15 +43,25 @@ namespace SymbioticTS.Core
                 .Select(p => (property: p, parameterName: p.Name.Camelize()));
         }
 
+        private static string GetFileName(TsTypeSymbol symbol)
+        {
+            return symbol.Name + ".ts";
+        }
+
         private static string GetPropertyTypeIdentifier(TsPropertySymbol property)
         {
-            if (property.Type.IsArray)
+            return GetTypeIdentifier(property.Type);
+        }
+
+        private static string GetTypeIdentifier(TsTypeSymbol type)
             {
-                return $"{property.Type.ElementType.Name}[]";
+            if (type.IsArray)
+            {
+                return $"{GetTypeIdentifier(type.ElementType)}[]";
             }
             else
             {
-                return property.Type.Name;
+                return type.Name;
             }
         }
 
@@ -240,18 +253,10 @@ namespace SymbioticTS.Core
                         writer.Write("?");
                     }
 
-                    writer.Write(": ");
-
-                    if (property.Type.IsArray)
-                    {
-                        writer.Write(property.Type.ElementType.Name).Write("[]");
-                    }
-                    else
-                    {
-                        writer.Write(property.Type.Name);
-                    }
-
-                    writer.WriteLine(";");
+                    writer
+                        .Write(": ")
+                        .Write(GetPropertyTypeIdentifier(property))
+                        .WriteLine(";");
                 }
             }
         }
