@@ -48,7 +48,7 @@ namespace SymbioticTS.Core
         /// Gets or sets the type.
         /// </summary>
         /// <value>The type.</value>
-        public Type Type { get; set; }
+        public Type Type { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TsTypeMetadata"/> class.
