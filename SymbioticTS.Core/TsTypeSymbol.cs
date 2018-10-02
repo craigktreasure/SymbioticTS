@@ -46,6 +46,11 @@ namespace SymbioticTS.Core
         public TsTypeSymbol Base { get; }
 
         /// <summary>
+        /// Gets the data transfer object interface, if any, associated with this symbol.
+        /// </summary>
+        public TsTypeSymbol DtoInterface { get; private set; }
+
+        /// <summary>
         /// Gets the type of the element.
         /// </summary>
         /// <value>The type of the element.</value>
@@ -56,6 +61,11 @@ namespace SymbioticTS.Core
         /// </summary>
         /// <value><c>true</c> if explicitly opted into; otherwise, <c>false</c>.</value>
         public bool ExplicitOptIn => this.TypeMetadata?.ExplicitOptIn ?? false;
+
+        /// <summary>
+        /// Gets a value indicating whether this symbol has a DTO interface.
+        /// </summary>
+        public bool HasDtoInterface => this.DtoInterface != null;
 
         /// <summary>
         /// Gets the interfaces.
@@ -178,6 +188,15 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
+        /// Sets the data transfer object interface symbol.
+        /// </summary>
+        /// <param name="dtoInterfaceSymbol">The dto interface symbol.</param>
+        public void SetDtoInterface(TsTypeSymbol dtoInterfaceSymbol)
+        {
+            this.DtoInterface = dtoInterfaceSymbol;
+        }
+
+        /// <summary>
         /// Creates an array symbol.
         /// </summary>
         /// <param name="elementType">The type of the element.</param>
@@ -188,6 +207,35 @@ namespace SymbioticTS.Core
             {
                 ElementType = elementType
             };
+        }
+
+        /// <summary>
+        /// Creates an array symbol.
+        /// </summary>
+        /// <param name="elementType">The type of the element.</param>
+        /// <param name="rank">The rank.</param>
+        /// <returns>A <see cref="TsTypeSymbol" />.</returns>
+        /// <exception cref="ArgumentException">The rank must be greater than 0.</exception>
+        internal static TsTypeSymbol CreateArraySymbol(TsTypeSymbol elementType, int rank)
+        {
+            if (rank <= 0)
+            {
+                throw new ArgumentException("The rank must be greater than 0.");
+            }
+
+            if (rank == 1)
+            {
+                return CreateArraySymbol(elementType);
+            }
+
+            TsTypeSymbol result = elementType;
+
+            for (int i = 0; i < rank; i++)
+            {
+                result = CreateArraySymbol(result);
+            }
+
+            return result;
         }
 
         /// <summary>

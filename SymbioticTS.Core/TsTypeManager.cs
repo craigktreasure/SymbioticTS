@@ -75,6 +75,7 @@ namespace SymbioticTS.Core
         {
             List<TsTypeSymbol> results = new List<TsTypeSymbol>();
             TsSymbolLookup symbolLookup = new TsSymbolLookup();
+            TsDtoTypeSymbolHelper dtoHelper = new TsDtoTypeSymbolHelper(symbolLookup, this.options);
 
             TsDependencySortVisitor sortVisitor = new TsDependencySortVisitor();
             IReadOnlyList<Type> sortedTypes = sortVisitor.Sort(types);
@@ -86,6 +87,8 @@ namespace SymbioticTS.Core
                 symbolLookup.Add(type, symbol);
                 results.Add(symbol);
             }
+
+            results.AddRange(dtoHelper.CreateAndConfigureDtoSymbols(results));
 
             return results;
         }

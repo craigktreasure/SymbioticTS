@@ -33,6 +33,12 @@ namespace SymbioticTS.Core
         public bool IsConstantEnum => this.IsEnum && ((this.Attribute as TsEnumAttribute)?.AsConstant ?? false);
 
         /// <summary>
+        /// Gets a value indicating whether this instance is a DTO.
+        /// </summary>
+        /// <value><c>true</c> if this instance is a DTO; otherwise, <c>false</c>.</value>
+        public bool IsDto => this.Attribute is TsDtoAttribute;
+
+        /// <summary>
         /// Gets a value indicating whether this instance is an enumeration.
         /// </summary>
         /// <value><c>true</c> if this instance is an enumeration; otherwise, <c>false</c>.</value>
