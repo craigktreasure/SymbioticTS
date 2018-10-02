@@ -21,22 +21,28 @@ namespace SymbioticTS.Core.Visitors
         {
             IReadOnlyList<Type> allTypes = types.Distinct().Apply();
 
-            this.typeDependencies = allTypes.ToDictionary(t => t, _ => new List<Type>());
-
-            foreach (Type type in types)
+            try
             {
-                if (this.currentType == null || type != this.currentType)
+                this.typeDependencies = allTypes.ToDictionary(t => t, _ => new List<Type>());
+
+                foreach (Type type in types)
                 {
-                    this.currentType = type;
-                    this.currentTypeDependencies = this.typeDependencies[type];
+                    if (this.currentType == null || type != this.currentType)
+                    {
+                        this.currentType = type;
+                        this.currentTypeDependencies = this.typeDependencies[type];
+                    }
+
+                    this.Visit(type);
                 }
 
-                this.Visit(type);
+                allTypes = this.typeDependencies.Keys.Concat(this.typeDependencies.Values.SelectMany(t => t)).Distinct().Apply();
             }
-
-            allTypes = this.typeDependencies.Keys.Concat(this.typeDependencies.Values.SelectMany(t => t)).Distinct().Apply();
-
-            this.typeDependencies = null;
+            finally
+            {
+                this.currentType = null;
+                this.typeDependencies = null;
+            }
 
             return allTypes;
         }
