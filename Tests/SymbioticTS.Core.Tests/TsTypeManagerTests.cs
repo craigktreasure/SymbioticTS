@@ -63,7 +63,16 @@ namespace SymbioticTS.Core.Tests
             Assert.Null(triangle.Base);
             Assert.Empty(triangle.Interfaces);
 
-            Assert.Equal(discoveredTypes.Count, symbols.Count);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.ShapeViewModel)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.IShape)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.Circle)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.Rectangle)).DtoInterface);
+
+            IReadOnlyList<TsTypeSymbol> dtoInterfaces = symbols
+                .Where(s => s.HasDtoInterface)
+                .Select(s => s.DtoInterface).Apply();
+
+            Assert.Equal(discoveredTypes.Count + dtoInterfaces.Count, symbols.Count);
         }
 
         [Fact]
