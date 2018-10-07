@@ -188,6 +188,16 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
+        /// Determines if this <see cref="TsTypeSymbol"/> requires a data transfer
+        /// object transformation.
+        /// </summary>
+        /// <returns><c>true</c> if a DTO transorm is required, <c>false</c> otherwise.</returns>
+        public bool RequiresDtoTransform()
+        {
+            return TsDtoTypeSymbolHelper.RequiresDtoTransform(this);
+        }
+
+        /// <summary>
         /// Sets the data transfer object interface symbol.
         /// </summary>
         /// <param name="dtoInterfaceSymbol">The dto interface symbol.</param>

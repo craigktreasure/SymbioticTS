@@ -30,6 +30,38 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
+        /// Determines if the specified <see cref="TsTypeSymbol"/> requires a data transfer
+        /// object transformation.
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol.</param>
+        /// <returns><c>true</c> if a DTO transorm is required, <c>false</c> otherwise.</returns>
+        /// <exception cref="ArgumentNullException">typeSymbol</exception>
+        public static bool RequiresDtoTransform(TsTypeSymbol typeSymbol)
+        {
+            if (typeSymbol == null)
+            {
+                throw new ArgumentNullException(nameof(typeSymbol));
+            }
+
+            if (dtoPropertyTypeSymbolMap.ContainsKey(typeSymbol))
+            {
+                return true;
+            }
+
+            if (typeSymbol.Properties.Any(p => RequiresDtoTransform(p.Type)))
+            {
+                return true;
+            }
+
+            if (typeSymbol.Base != null && RequiresDtoTransform(typeSymbol.Base))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Creates and configures DTO symbols.
         /// </summary>
         /// <param name="typeSymbols">The type symbols.</param>
