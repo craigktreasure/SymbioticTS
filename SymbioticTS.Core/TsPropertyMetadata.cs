@@ -1,5 +1,7 @@
 using SymbioticTS.Abstractions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace SymbioticTS.Core
@@ -44,7 +46,7 @@ namespace SymbioticTS.Core
         private TsPropertyMetadata(PropertyInfo propertyInfo)
         {
             this.Property = propertyInfo ?? throw new ArgumentNullException(nameof(propertyInfo));
-            this.Attribute = propertyInfo.GetCustomAttribute<TsPropertyAttribute>();
+            this.Attribute = propertyInfo.GetCustomAttribute<TsPropertyAttribute>(true) ?? FindInheritedAttribute(propertyInfo);
             this.IsReadOnly = GetIsReadOnly(propertyInfo, this.Attribute);
             this.IsOptional = GetIsOptional(propertyInfo, this.Attribute);
         }
@@ -57,6 +59,49 @@ namespace SymbioticTS.Core
         internal static TsPropertyMetadata LoadFrom(PropertyInfo propertyInfo)
         {
             return new TsPropertyMetadata(propertyInfo);
+        }
+
+        /// <summary>
+        /// Finds an inherited attribute on interfaces if available.
+        /// </summary>
+        /// <remarks>
+        /// Performs a breadth search to find the first attribute available for the specified property.
+        /// </remarks>
+        /// <param name="propertyInfo">The property information.</param>
+        /// <returns><see cref="TsPropertyAttribute"/> or null.</returns>
+        private static TsPropertyAttribute FindInheritedAttribute(PropertyInfo propertyInfo)
+        {
+            Type type = propertyInfo.DeclaringType;
+
+            IReadOnlyList<Type> interfaces = type.GetInterfaces();
+            TsPropertyAttribute attribute = null;
+
+            while (interfaces.Count != 0 && attribute == null)
+            {
+                foreach (Type @interface in interfaces)
+                {
+                    PropertyInfo interfaceProperty = @interface.GetProperty(
+                        propertyInfo.Name,
+                        BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Public);
+
+                    if (interfaceProperty != null)
+                    {
+                        attribute = interfaceProperty.GetCustomAttribute<TsPropertyAttribute>(true);
+
+                        if (attribute != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (attribute == null)
+                {
+                    interfaces = interfaces.SelectMany(i => i.GetInterfaces()).Apply();
+                }
+            }
+
+            return attribute;
         }
 
         /// <summary>
