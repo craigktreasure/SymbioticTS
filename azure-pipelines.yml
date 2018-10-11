@@ -8,7 +8,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '2.1.402'
+  dotnetSdkVersion: '2.1.403'
 
 steps:
 - task: DotNetCoreInstaller@0
