@@ -1,4 +1,4 @@
-﻿namespace ReferenceProject.Shapes
+﻿namespace ScenarioReferenceProject.Shapes
 {
     public class Pentagon : BaseShape
     {

@@ -1,6 +1,6 @@
 ﻿using SymbioticTS.Abstractions;
 
-namespace ReferenceProject.Shapes
+namespace ScenarioReferenceProject.Shapes
 {
     [TsInterface]
     public interface IShape

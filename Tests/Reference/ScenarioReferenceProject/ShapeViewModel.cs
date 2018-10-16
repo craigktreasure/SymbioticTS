@@ -1,9 +1,9 @@
-﻿using ReferenceProject.Shapes;
+﻿using ScenarioReferenceProject.Shapes;
 using SymbioticTS.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ReferenceProject
+namespace ScenarioReferenceProject
 {
     [TsDto]
     public class ShapeViewModel : BaseViewModel

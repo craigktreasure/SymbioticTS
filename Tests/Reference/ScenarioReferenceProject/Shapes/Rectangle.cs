@@ -1,6 +1,6 @@
 ﻿using SymbioticTS.Abstractions;
 
-namespace ReferenceProject.Shapes
+namespace ScenarioReferenceProject.Shapes
 {
     [TsClass]
     public class Rectangle : BaseShape, IQuadrilateral
