@@ -51,22 +51,22 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Type> discoveredTypes = manager.ResolveTypes(typeof(ReferenceProject.AssemblyClassToken).Assembly);
+            IReadOnlyList<Type> discoveredTypes = manager.ResolveTypes(typeof(ScenarioReferenceProject.AssemblyClassToken).Assembly);
 
             IReadOnlyList<TsTypeSymbol> symbols = manager.ResolveTypeSymbols(discoveredTypes);
 
             // Check the flattened symbol.
-            Assert.Contains(symbols, s => s.Name == nameof(ReferenceProject.Shapes.Triangle));
-            TsTypeSymbol triangle = symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.Triangle));
+            Assert.Contains(symbols, s => s.Name == nameof(ScenarioReferenceProject.Shapes.Triangle));
+            TsTypeSymbol triangle = symbols.First(s => s.Name == nameof(ScenarioReferenceProject.Shapes.Triangle));
             Assert.True(triangle.IsClass);
             Assert.Equal(3, triangle.Properties.Count);
             Assert.Null(triangle.Base);
             Assert.Empty(triangle.Interfaces);
 
-            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.ShapeViewModel)).DtoInterface);
-            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.IShape)).DtoInterface);
-            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.Circle)).DtoInterface);
-            Assert.NotNull(symbols.First(s => s.Name == nameof(ReferenceProject.Shapes.Rectangle)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ScenarioReferenceProject.ShapeViewModel)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ScenarioReferenceProject.Shapes.IShape)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ScenarioReferenceProject.Shapes.Circle)).DtoInterface);
+            Assert.NotNull(symbols.First(s => s.Name == nameof(ScenarioReferenceProject.Shapes.Rectangle)).DtoInterface);
 
             IReadOnlyList<TsTypeSymbol> dtoInterfaces = symbols
                 .Where(s => s.HasDtoInterface)
@@ -92,23 +92,23 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Type> actualTypes = manager.ResolveTypes(typeof(ReferenceProject.AssemblyClassToken).Assembly);
+            IReadOnlyList<Type> actualTypes = manager.ResolveTypes(typeof(ScenarioReferenceProject.AssemblyClassToken).Assembly);
 
             Assert.NotNull(actualTypes);
             Assert.NotEmpty(actualTypes);
 
             IReadOnlyList<Type> expectedTypes = new[]
             {
-                typeof(ReferenceProject.BaseViewModel),
-                typeof(ReferenceProject.ShapeViewModel),
-                typeof(ReferenceProject.Shapes.BaseShape),
-                typeof(ReferenceProject.Shapes.Border),
-                typeof(ReferenceProject.Shapes.Circle),
-                typeof(ReferenceProject.Shapes.Color),
-                typeof(ReferenceProject.Shapes.IQuadrilateral),
-                typeof(ReferenceProject.Shapes.IShape),
-                typeof(ReferenceProject.Shapes.Rectangle),
-                typeof(ReferenceProject.Shapes.Triangle),
+                typeof(ScenarioReferenceProject.BaseViewModel),
+                typeof(ScenarioReferenceProject.ShapeViewModel),
+                typeof(ScenarioReferenceProject.Shapes.BaseShape),
+                typeof(ScenarioReferenceProject.Shapes.Border),
+                typeof(ScenarioReferenceProject.Shapes.Circle),
+                typeof(ScenarioReferenceProject.Shapes.Color),
+                typeof(ScenarioReferenceProject.Shapes.IQuadrilateral),
+                typeof(ScenarioReferenceProject.Shapes.IShape),
+                typeof(ScenarioReferenceProject.Shapes.Rectangle),
+                typeof(ScenarioReferenceProject.Shapes.Triangle),
             }.OrderBy(t => t.Name).Apply();
 
             if (expectedTypes.Count > actualTypes.Count)

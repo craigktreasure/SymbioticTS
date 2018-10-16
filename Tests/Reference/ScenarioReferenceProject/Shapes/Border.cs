@@ -1,6 +1,6 @@
 ﻿using SymbioticTS.Abstractions;
 
-namespace ReferenceProject.Shapes
+namespace ScenarioReferenceProject.Shapes
 {
     [TsEnum(name: "ShapeBorder", asConstant: true)]
     public enum Border

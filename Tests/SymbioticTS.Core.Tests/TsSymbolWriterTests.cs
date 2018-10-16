@@ -12,7 +12,7 @@ namespace SymbioticTS.Core.Tests
         private static readonly string testTempPath = Path.Combine(Path.GetTempPath(), "SymbioticTs", "Tests", nameof(TsSymbolWriterTests));
 
         [Theory]
-        [InlineData(typeof(ReferenceProject.AssemblyClassToken), @"Content\ReferenceProject")]
+        [InlineData(typeof(ScenarioReferenceProject.AssemblyClassToken), @"Content\ReferenceProject")]
         [InlineData(typeof(DiscoveryReferenceProject.AssemblyClassToken), @"Content\DiscoveryReferenceProject")]
         public void WriteReferenceProjectSymbols(Type assemblyType, string expectedResourceQualifier)
         {

@@ -1,4 +1,4 @@
-﻿namespace ReferenceProject
+namespace ScenarioReferenceProject
 {
     internal class AssemblyClassToken
     {

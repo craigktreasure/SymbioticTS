@@ -1,7 +1,7 @@
 ﻿using SymbioticTS.Abstractions;
 using System;
 
-namespace ReferenceProject
+namespace ScenarioReferenceProject
 {
     [TsClass(name: "ViewModelBase")]
     public abstract class BaseViewModel
