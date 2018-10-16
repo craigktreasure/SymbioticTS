@@ -9,7 +9,7 @@ namespace SymbioticTS.Core
 {
     internal class TsDtoTypeSymbolHelper
     {
-        private static readonly Dictionary<TsTypeSymbol, TsTypeSymbol> dtoPropertyTypeSymbolMap = new Dictionary<TsTypeSymbol, TsTypeSymbol>
+        private static readonly DtoTypeSymbolMap dtoPropertyTypeSymbolMap = new DtoTypeSymbolMap
         {
             [TsTypeSymbol.Date] = TsTypeSymbol.String
         };
@@ -43,22 +43,99 @@ namespace SymbioticTS.Core
                 throw new ArgumentNullException(nameof(typeSymbol));
             }
 
-            if (dtoPropertyTypeSymbolMap.ContainsKey(typeSymbol))
+            TsTypeSymbol unwrappedTypeSymbol = typeSymbol.UnwrapArray();
+
+            if (unwrappedTypeSymbol.IsClass && unwrappedTypeSymbol.HasDtoInterface)
             {
                 return true;
             }
 
-            if (typeSymbol.Properties.Any(p => RequiresDtoTransform(p.Type)))
+            if (dtoPropertyTypeSymbolMap.ContainsKey(unwrappedTypeSymbol))
             {
                 return true;
             }
 
-            if (typeSymbol.Base != null && RequiresDtoTransform(typeSymbol.Base))
+            if (unwrappedTypeSymbol.Properties.Any(p => RequiresDtoTransform(p.Type)))
+            {
+                return true;
+            }
+
+            if (unwrappedTypeSymbol.Base != null && RequiresDtoTransform(unwrappedTypeSymbol.Base))
             {
                 return true;
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Writes the symbol dto transformation.
+        /// </summary>
+        /// <param name="propertySymbol">The property symbol.</param>
+        /// <param name="valueAccessor">The value accessor.</param>
+        /// <param name="variableName">The name of the variable to write.</param>
+        /// <param name="interfaceTransformLookup">The interface transform lookup.</param>
+        /// <param name="writer">The writer.</param>
+        /// <exception cref="InvalidOperationException">The specified type does not require DTO transformation: {type.Name}</exception>
+        /// <exception cref="NotSupportedException">Unable to write transformation for the specified type: {type.Name}</exception>
+        public static void WriteSymbolDtoTransformation(TsPropertySymbol propertySymbol, string valueAccessor,
+            string variableName, DtoInterfaceTransformLookup interfaceTransformLookup, SourceWriter writer)
+        {
+            if (!RequiresDtoTransform(propertySymbol.Type))
+            {
+                throw new InvalidOperationException($"The specified type does not require DTO transformation: {propertySymbol.Type.Name}.");
+            }
+
+            bool isArray = propertySymbol.Type.IsArray;
+            bool isOptional = propertySymbol.IsOptional;
+            TsTypeSymbol type = propertySymbol.Type.UnwrapArray();
+
+            writer.Write($"const {variableName} = ");
+
+            if (isOptional)
+            {
+                writer.Write($"{valueAccessor} === {TsTypeSymbol.Undefined.Name} ? {TsTypeSymbol.Undefined.Name} : ");
+            }
+
+            if (type.IsInterface && type.HasDtoInterface)
+            {
+                DtoInterfaceTransformMetadata dtoInterfaceMetadata = interfaceTransformLookup[type.DtoInterface];
+
+                if (isArray)
+                {
+                    writer.WriteLine($"{valueAccessor}.map({dtoInterfaceMetadata.TransformMethodAccessor});");
+                }
+                else
+                {
+                    writer.WriteLine($"{dtoInterfaceMetadata.TransformMethodAccessor}({valueAccessor});");
+                }
+            }
+            else if (type.IsClass && type.HasDtoInterface)
+            {
+                if (isArray)
+                {
+                    writer.WriteLine($"{valueAccessor}.map({type.Name}.fromDto);");
+                }
+                else
+                {
+                    writer.WriteLine($"{type.Name}.fromDto({valueAccessor});");
+                }
+            }
+            else if (type == TsTypeSymbol.Date)
+            {
+                if (isArray)
+                {
+                    writer.WriteLine($"{valueAccessor}.map(s => new Date(s));");
+                }
+                else
+                {
+                    writer.WriteLine($"new Date({valueAccessor});");
+                }
+            }
+            else
+            {
+                throw new NotSupportedException($"Unable to write transformation for the specified type: {type.Name}.");
+            }
         }
 
         /// <summary>

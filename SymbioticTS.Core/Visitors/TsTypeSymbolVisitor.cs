@@ -21,6 +21,15 @@ namespace SymbioticTS.Core.Visitors
         }
 
         /// <summary>
+        /// Visits the data transfer interface type symbol.
+        /// </summary>
+        /// <param name="typeSymbol">The type symbol.</param>
+        protected virtual void VisitDtoInterfaceTypeSymbol(TsTypeSymbol typeSymbol)
+        {
+            this.VisitTypeSymbol(typeSymbol);
+        }
+
+        /// <summary>
         /// Visits the interface type symbol.
         /// </summary>
         /// <param name="typeSymbol">The type symbol.</param>
@@ -61,6 +70,11 @@ namespace SymbioticTS.Core.Visitors
             if (typeSymbol.IsPrimitive)
             {
                 return;
+            }
+
+            if (typeSymbol.HasDtoInterface)
+            {
+                this.VisitDtoInterfaceTypeSymbol(typeSymbol.DtoInterface);
             }
 
             if (typeSymbol.Base != null)

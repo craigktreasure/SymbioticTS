@@ -9,8 +9,10 @@ namespace SymbioticTS.Core
         Date,
         Enum,
         Interface,
+        Null,
         Number,
         String,
+        Undefined,
         Unknown,
     }
 }

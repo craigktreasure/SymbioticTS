@@ -5,6 +5,7 @@
 
 import { Circle } from './Circle';
 import { IShape } from './IShape';
+import { IShapeViewModelDto } from './IShapeViewModelDto';
 import { Rectangle } from './Rectangle';
 import { ViewModelBase } from './ViewModelBase';
 
@@ -35,5 +36,23 @@ export class ShapeViewModel extends ViewModelBase
         this.totalShapes = totalShapes;
         this.shapes = shapes;
         this.totalRectangles = totalRectangles;
+    }
+
+    public static fromDto(dto: IShapeViewModelDto): ShapeViewModel
+    {
+        const circles = dto.circles.map(Circle.fromDto);
+        const dateCreated = new Date(dto.dateCreated);
+        const rectangles = dto.rectangles.map(Rectangle.fromDto);
+        const dateUpdated = dto.dateUpdated === undefined ? undefined : new Date(dto.dateUpdated);
+
+        return new ShapeViewModel(
+            circles,
+            dateCreated,
+            rectangles,
+            dto.totalCircles,
+            dto.totalShapes,
+            dateUpdated,
+            dto.shapes,
+            dto.totalRectangles);
     }
 }

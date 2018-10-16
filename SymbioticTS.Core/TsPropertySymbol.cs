@@ -126,8 +126,20 @@ namespace SymbioticTS.Core
         }
     }
 
-    internal class TsPropertySymbolComparer : IEqualityComparer<TsPropertySymbol>
+    internal sealed class TsPropertySymbolComparer : IEqualityComparer<TsPropertySymbol>
     {
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static IEqualityComparer<TsPropertySymbol> Instance = new TsPropertySymbolComparer();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="TsPropertySymbolComparer"/> class from being created.
+        /// </summary>
+        private TsPropertySymbolComparer()
+        {
+        }
+
         /// <summary>
         /// Determines whether the specified objects are equal.
         /// </summary>
@@ -157,6 +169,52 @@ namespace SymbioticTS.Core
         public int GetHashCode(TsPropertySymbol obj)
         {
             return obj.PropertyMetadata.Property.GetHashCode();
+        }
+    }
+
+    internal sealed class TsPropertySymbolNameComparer : IEqualityComparer<TsPropertySymbol>
+    {
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static IEqualityComparer<TsPropertySymbol> Instance = new TsPropertySymbolNameComparer();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="TsPropertySymbolComparer"/> class from being created.
+        /// </summary>
+        private TsPropertySymbolNameComparer()
+        {
+        }
+
+        /// <summary>
+        /// Determines whether the specified objects are equal.
+        /// </summary>
+        /// <param name="x">The first object of type T to compare.</param>
+        /// <param name="y">The second object of type T to compare.</param>
+        /// <returns>true if the specified objects are equal; otherwise, false.</returns>
+        public bool Equals(TsPropertySymbol x, TsPropertySymbol y)
+        {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x == null || y == null)
+            {
+                return false;
+            }
+
+            return x.Name == y.Name;
+        }
+
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="T:System.Object"></see> for which a hash code is to be returned.</param>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        public int GetHashCode(TsPropertySymbol obj)
+        {
+            return obj.Name.GetHashCode();
         }
     }
 }
