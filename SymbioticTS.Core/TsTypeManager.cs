@@ -28,37 +28,56 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
-        /// Resolves the assemblies that may contain TypeScript objects.
+        /// Discovers the assemblies that may contain relevant <see cref="Type"/> objects.
         /// </summary>
         /// <param name="assembly">The root assembly.</param>
         /// <returns><see cref="IReadOnlyList{T}"/> of <see cref="Assembly"/>.</returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public IReadOnlyList<Assembly> ResolveAssemblies(Assembly assembly)
+        public IReadOnlyList<Assembly> DiscoverAssemblies(Assembly assembly)
         {
             return DiscoverAllSupportingAssemblies(assembly).Distinct().Apply();
         }
 
         /// <summary>
-        /// Resolves the TypeScript <see cref="Type"/> objects from the specified assemblies.
+        /// Discovers relevant <see cref="Type"/> objects from the specified assemblies.
         /// </summary>
         /// <param name="assemblies">The assemblies.</param>
         /// <returns>An <see cref="IReadOnlyList{T}"/> of <see cref="Type"/>.</returns>
-        public IReadOnlyList<Type> ResolveTypes(IEnumerable<Assembly> assemblies)
+        public IReadOnlyList<Type> DiscoverTypes(IEnumerable<Assembly> assemblies)
         {
             return assemblies
-                .SelectMany(a => this.ResolveTypes(a))
+                .SelectMany(a => this.DiscoverTypes(a))
                 .Distinct()
                 .Apply();
         }
 
         /// <summary>
-        /// Resolves the TypeScript <see cref="Type"/> objects from the specified assembly.
+        /// Discovers relevant <see cref="Type"/> objects from the specified assembly.
         /// </summary>
         /// <param name="assembly">The assembly.</param>
         /// <returns>An <see cref="IReadOnlyList{T}"/> of <see cref="Type"/>.</returns>
-        public IReadOnlyList<Type> ResolveTypes(Assembly assembly)
+        public IReadOnlyList<Type> DiscoverTypes(Assembly assembly)
         {
-            IEnumerable<Type> explicitlyAttributedTypes = assembly.DefinedTypes
+            return this.DiscoverTypes(assembly.DefinedTypes);
+        }
+
+        /// <summary>
+        /// Discovers relavant <see cref="Type" /> objects from the specified list of types.
+        /// </summary>
+        /// <param name="types">The types.</param>
+        /// <returns>An <see cref="IReadOnlyList{T}" /> of <see cref="Type" />.</returns>
+        public IReadOnlyList<Type> DiscoverTypes(params Type[] types)
+        {
+            return this.DiscoverTypes(types.AsEnumerable());
+        }
+
+        /// <summary>
+        /// Discovers relavant <see cref="Type" /> objects from the specified list of types.
+        /// </summary>
+        /// <param name="types">The types.</param>
+        /// <returns>An <see cref="IReadOnlyList{T}" /> of <see cref="Type" />.</returns>
+        public IReadOnlyList<Type> DiscoverTypes(IEnumerable<Type> types)
+        {
+            IEnumerable<Type> explicitlyAttributedTypes = types
                 .Where(IsTypeScriptType);
 
             TsFullDependencyVisitor visitor = new TsFullDependencyVisitor();

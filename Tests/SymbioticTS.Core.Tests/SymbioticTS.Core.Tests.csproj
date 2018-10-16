@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Reference\DiscoveryReferenceProjectWithReference\DiscoveryReferenceProjectWithReference.csproj" />
     <ProjectReference Include="..\Reference\DiscoveryReferenceProject\DiscoveryReferenceProject.csproj" />
     <ProjectReference Include="..\Reference\ScenarioReferenceProject\ScenarioReferenceProject.csproj" />
+    <ProjectReference Include="..\Reference\UnitTestReferenceLibrary\UnitTestReferenceLibrary.csproj" />
     <ProjectReference Include="..\SymbioticTS.TestLibrary\SymbioticTS.TestLibrary.csproj" />
   </ItemGroup>
 

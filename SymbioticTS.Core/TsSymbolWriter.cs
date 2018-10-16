@@ -10,9 +10,9 @@ namespace SymbioticTS.Core
 {
     internal class TsSymbolWriter
     {
-        private readonly TsDirectDependencyTypeSymbolVisitor dependencyVisitor = new TsDirectDependencyTypeSymbolVisitor();
-
         private readonly IFileSink fileSink;
+
+        private readonly TsSymbolImportVisitor importVisitor = new TsSymbolImportVisitor();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TsSymbolWriter"/> class.
@@ -35,6 +35,24 @@ namespace SymbioticTS.Core
             }
         }
 
+        private static IEnumerable<TsPropertySymbol> GetAllDistinctProperties(TsTypeSymbol symbol)
+        {
+            HashSet<TsPropertySymbol> propertySymbols = new HashSet<TsPropertySymbol>(
+                symbol.Properties, TsPropertySymbolNameComparer.Instance);
+
+            if (symbol.Base != null)
+            {
+                propertySymbols.AddRange(GetAllDistinctProperties(symbol.Base));
+            }
+
+            if (symbol.Interfaces.Count > 0)
+            {
+                propertySymbols.AddRange(symbol.Interfaces.SelectMany(i => GetAllDistinctProperties(i)));
+            }
+
+            return propertySymbols;
+        }
+
         private static IEnumerable<(TsPropertySymbol property, string parameterName)> GetConstructorParameters(IEnumerable<TsPropertySymbol> propertySymbols)
         {
             return propertySymbols
@@ -54,7 +72,7 @@ namespace SymbioticTS.Core
         }
 
         private static string GetTypeIdentifier(TsTypeSymbol type)
-            {
+        {
             if (type.IsArray)
             {
                 return $"{GetTypeIdentifier(type.ElementType)}[]";
@@ -154,6 +172,101 @@ namespace SymbioticTS.Core
                         writer.WriteLine($"this.{property.Name} = {parameterName};");
                     }
                 }
+
+                // Write the Dto creater if necessary
+                bool writeDtoMethod = symbol.IsClass && !symbol.IsAbstractClass && symbol.HasDtoInterface;
+                if (writeDtoMethod)
+                {
+                    this.WriteClassDtoTransformMethod(writer, symbol);
+                }
+            }
+        }
+
+        private void WriteClassDtoTransformMethod(SourceWriter writer, TsTypeSymbol symbol)
+        {
+            //InterfaceTransformLookup interfaceTransformLookup = this.BuildInterfaceTransformLookup(symbol);
+            DtoInterfaceTransformLookup interfaceTransformLookup = DtoInterfaceTransformLookup.BuildLookup(symbol);
+
+            writer.WriteLine();
+
+            TsTypeSymbol dtoInterface = symbol.DtoInterface;
+
+            writer.WriteLine($"public static fromDto(dto: {dtoInterface.Name}): {symbol.Name}");
+
+            using (writer.Block())
+            {
+                var rawClassParameters = GetConstructorParameters(GetAllDistinctProperties(symbol))
+                    .Select(cp => new { cp.property, cp.parameterName, requiresTransform = cp.property.Type.RequiresDtoTransform() })
+                    .Apply();
+
+                if (rawClassParameters.Any(x => x.requiresTransform))
+                {
+                    foreach (var parameter in rawClassParameters.Where(x => x.requiresTransform))
+                    {
+                        TsDtoTypeSymbolHelper.WriteSymbolDtoTransformation(
+                            propertySymbol: parameter.property,
+                            valueAccessor: $"dto.{parameter.property.Name}",
+                            variableName: parameter.parameterName,
+                            interfaceTransformLookup: interfaceTransformLookup,
+                            writer);
+                    }
+
+                    writer.WriteLine();
+                }
+
+                // Write out the class constructor.
+                var classParameters = rawClassParameters.Select(p => p.requiresTransform ? p.parameterName : "dto." + p.parameterName)
+                    .Apply();
+                writer.Write($"return new {symbol.Name}(");
+                this.WriteCommaSeparatedItems(writer, classParameters);
+                writer.WriteLine(");");
+            }
+
+            // Write interface transform methods, if any.
+            if (interfaceTransformLookup.Count > 0)
+            {
+                this.WriteClassDtoInterfaceTransfomMethods(writer, interfaceTransformLookup);
+            }
+        }
+
+        private void WriteClassDtoInterfaceTransfomMethods(SourceWriter writer, DtoInterfaceTransformLookup interfaceTransformLookup)
+        {
+            foreach (var (dtoInterfaceSymbol, dtoInterfaceMetadata) in interfaceTransformLookup)
+            {
+                writer.WriteLine();
+
+                writer.WriteLine($"private static {dtoInterfaceMetadata.TransformMethodName}(dto: {dtoInterfaceSymbol.Name}): {dtoInterfaceMetadata.ClassSymbol.Name}");
+
+                using (writer.Block())
+                {
+                    var interfaceParameters = GetConstructorParameters(GetAllDistinctProperties(dtoInterfaceMetadata.ClassSymbol))
+                        .Select(x => new { x.property, requiresDtoTransform = x.property.Type.RequiresDtoTransform(), x.parameterName })
+                        .Apply();
+
+                    if (interfaceParameters.Any(p => p.requiresDtoTransform))
+                    {
+                        foreach (var parameter in interfaceParameters.Where(p => p.requiresDtoTransform))
+                        {
+                            TsDtoTypeSymbolHelper.WriteSymbolDtoTransformation(
+                                propertySymbol: parameter.property,
+                                valueAccessor: $"dto.{parameter.property.Name}",
+                                variableName: parameter.parameterName,
+                                interfaceTransformLookup: interfaceTransformLookup,
+                                writer);
+                        }
+
+                        writer.WriteLine();
+                    }
+
+                    IReadOnlyList<string> interfaceInitialization = interfaceParameters
+                        .Select(p => $"{p.property.Name}: {(p.requiresDtoTransform ? p.parameterName : $"dto.{p.property.Name}")}")
+                        .Apply();
+
+                    writer.WriteLine("return {");
+                    this.WriteCommaSeparatedItems(writer, interfaceInitialization, maxBeforeWrap: 0);
+                    writer.WriteLine();
+                    writer.WriteLine("};");
+                }
             }
         }
 
@@ -165,7 +278,7 @@ namespace SymbioticTS.Core
             }
             else
             {
-                writer.WriteLine();
+                writer.EnsureNewLine();
                 using (writer.Indent())
                 {
                     for (int i = 0; i < items.Count; i++)
@@ -205,16 +318,15 @@ namespace SymbioticTS.Core
 
         private void WriteImports(SourceWriter writer, TsTypeSymbol symbol)
         {
-            IReadOnlyList<TsTypeSymbol> dependencies = this.dependencyVisitor
-                .GetDependencies(symbol).OrderBy(t => t.Name).Apply();
+            IReadOnlyCollection<TsTypeSymbol> imports = this.importVisitor.GatherImportSymbols(symbol);
 
-            foreach (TsTypeSymbol dependency in dependencies)
+            if (imports.Count > 0)
             {
-                writer.WriteLine($"import {{ {dependency.Name} }} from './{dependency.Name}';");
-            }
+                foreach (TsTypeSymbol dependency in imports.OrderBy(t => t.Name))
+                {
+                    writer.WriteLine($"import {{ {dependency.Name} }} from './{dependency.Name}';");
+                }
 
-            if (dependencies.Count > 0)
-            {
                 writer.WriteLine();
             }
         }

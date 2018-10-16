@@ -14,7 +14,7 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Assembly> actualAssemblies = manager.ResolveAssemblies(typeof(AssemblyClassToken).Assembly);
+            IReadOnlyList<Assembly> actualAssemblies = manager.DiscoverAssemblies(typeof(AssemblyClassToken).Assembly);
 
             Assert.NotNull(actualAssemblies);
             Assert.NotEmpty(actualAssemblies);
@@ -26,7 +26,7 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Assembly> actualAssemblies = manager.ResolveAssemblies(
+            IReadOnlyList<Assembly> actualAssemblies = manager.DiscoverAssemblies(
                 typeof(DiscoveryReferenceProjectWithReference.AssemblyClassToken).Assembly);
 
             Assert.NotNull(actualAssemblies);
@@ -39,7 +39,7 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Type> discoveredTypes = manager.ResolveTypes(typeof(AssemblyClassToken).Assembly);
+            IReadOnlyList<Type> discoveredTypes = manager.DiscoverTypes(typeof(AssemblyClassToken).Assembly);
 
             IReadOnlyList<TsTypeSymbol> symbols = manager.ResolveTypeSymbols(discoveredTypes);
 
@@ -51,7 +51,7 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Type> discoveredTypes = manager.ResolveTypes(typeof(ScenarioReferenceProject.AssemblyClassToken).Assembly);
+            IReadOnlyList<Type> discoveredTypes = manager.DiscoverTypes(typeof(ScenarioReferenceProject.AssemblyClassToken).Assembly);
 
             IReadOnlyList<TsTypeSymbol> symbols = manager.ResolveTypeSymbols(discoveredTypes);
 
@@ -80,9 +80,9 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IEnumerable<Assembly> assemblies = manager.ResolveAssemblies(
+            IEnumerable<Assembly> assemblies = manager.DiscoverAssemblies(
                 typeof(DiscoveryReferenceProjectWithReference.AssemblyClassToken).Assembly);
-            IReadOnlyList<Type> actualTypes = manager.ResolveTypes(assemblies);
+            IReadOnlyList<Type> actualTypes = manager.DiscoverTypes(assemblies);
 
             ValidateDiscoveryReferenceProject(actualTypes);
         }
@@ -92,7 +92,7 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Type> actualTypes = manager.ResolveTypes(typeof(ScenarioReferenceProject.AssemblyClassToken).Assembly);
+            IReadOnlyList<Type> actualTypes = manager.DiscoverTypes(typeof(ScenarioReferenceProject.AssemblyClassToken).Assembly);
 
             Assert.NotNull(actualTypes);
             Assert.NotEmpty(actualTypes);
@@ -130,7 +130,7 @@ namespace SymbioticTS.Core.Tests
         {
             TsTypeManager manager = new TsTypeManager();
 
-            IReadOnlyList<Type> actualTypes = manager.ResolveTypes(typeof(AssemblyClassToken).Assembly);
+            IReadOnlyList<Type> actualTypes = manager.DiscoverTypes(typeof(AssemblyClassToken).Assembly);
 
             ValidateDiscoveryReferenceProject(actualTypes);
         }

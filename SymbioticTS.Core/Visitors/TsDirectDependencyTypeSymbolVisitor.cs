@@ -15,15 +15,19 @@ namespace SymbioticTS.Core.Visitors
         /// <returns><see cref="IReadOnlyCollection{T}"/> of <see cref="TsTypeSymbol"/>.</returns>
         public IReadOnlyCollection<TsTypeSymbol> GetDependencies(TsTypeSymbol typeSymbol)
         {
-            this.dependencies = new HashSet<TsTypeSymbol>();
+            try
+            {
+                this.dependencies = new HashSet<TsTypeSymbol>();
 
-            this.Visit(typeSymbol);
+                this.Visit(typeSymbol);
 
-            IReadOnlyCollection<TsTypeSymbol> results = this.dependencies;
-
-            this.dependencies = null;
-
-            return results;
+                return this.dependencies;
+            }
+            finally
+            {
+                this.dependencies = null;
+                this.depth = 0;
+            }
         }
 
         /// <summary>

@@ -86,6 +86,20 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
+        /// Ensures the writer is on a new line.
+        /// </summary>
+        /// <returns>SourceWriter.</returns>
+        public SourceWriter EnsureNewLine()
+        {
+            if (this.atBeginning)
+            {
+                return this;
+            }
+
+            return this.WriteLine();
+        }
+
+        /// <summary>
         /// Flushes all buffers to the underlying stream.
         /// </summary>
         public void Flush()

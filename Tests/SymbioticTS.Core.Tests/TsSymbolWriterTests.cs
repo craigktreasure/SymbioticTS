@@ -1,3 +1,4 @@
+using SymbioticTS.Abstractions;
 using SymbioticTS.Core.IOAbstractions;
 using SymbioticTS.TestLibrary;
 using System;
@@ -20,7 +21,44 @@ namespace SymbioticTS.Core.Tests
             MemoryFileSink fileSink = new MemoryFileSink();
             TsSymbolWriter symbolWriter = new TsSymbolWriter(fileSink);
 
-            IReadOnlyList<Type> discoveredTypes = manager.ResolveTypes(assemblyType.Assembly);
+            IReadOnlyList<Type> discoveredTypes = manager.DiscoverTypes(assemblyType.Assembly);
+            IReadOnlyList<TsTypeSymbol> symbols = manager.ResolveTypeSymbols(discoveredTypes);
+            symbolWriter.WriteSymbols(symbols);
+
+            IFileSource fileSource = AssemblyResourceFileSource.WithResourceQualifier(
+                typeof(TsSymbolWriterTests).Assembly, expectedResourceQualifier);
+
+            try
+            {
+                fileSource.AssertSameSource(fileSink.ToSource());
+            }
+            catch
+            {
+                IFileSink debugFileSink = new DirectoryFileSink(Path.Combine(testTempPath, expectedResourceQualifier));
+                fileSink.CopyTo(debugFileSink);
+                throw;
+            }
+        }
+
+        [Theory]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoSimpleTestClass))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithDateTimeCollectionTestClass))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithDateTimeTestClass))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithOptionalPropertyTestClass))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithReadOnlyPropertyTestClass))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithTransformClassCollectionProperty))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithTransformClassProperty))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithTransformInterfaceCollectionProperty))]
+        [InlineData(typeof(UnitTestReferenceLibrary.DtoWithTransformInterfaceProperty))]
+        public void WriteTypeSymbols(Type type)
+        {
+            string expectedResourceQualifier = $@"Content\UnitTests\{type.Name}";
+
+            TsTypeManager manager = new TsTypeManager();
+            MemoryFileSink fileSink = new MemoryFileSink();
+            TsSymbolWriter symbolWriter = new TsSymbolWriter(fileSink);
+
+            IReadOnlyList<Type> discoveredTypes = manager.DiscoverTypes(type);
             IReadOnlyList<TsTypeSymbol> symbols = manager.ResolveTypeSymbols(discoveredTypes);
             symbolWriter.WriteSymbols(symbols);
 

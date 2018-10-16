@@ -25,6 +25,11 @@ namespace SymbioticTS.Core
         public static TsTypeSymbol Date { get; } = new TsTypeSymbol("Date", TsSymbolKind.Date);
 
         /// <summary>
+        /// Gets the null <see cref="TsTypeSymbol"/>.
+        /// </summary>
+        public static TsTypeSymbol Null { get; } = new TsTypeSymbol("null", TsSymbolKind.Null);
+
+        /// <summary>
         /// Gets the number <see cref="TsTypeSymbol"/>.
         /// </summary>
         public static TsTypeSymbol Number { get; } = new TsTypeSymbol("number", TsSymbolKind.Number);
@@ -33,6 +38,11 @@ namespace SymbioticTS.Core
         /// Gets the string <see cref="TsTypeSymbol"/>.
         /// </summary>
         public static TsTypeSymbol String { get; } = new TsTypeSymbol("string", TsSymbolKind.String);
+
+        /// <summary>
+        /// Gets the undefined <see cref="TsTypeSymbol"/>.
+        /// </summary>
+        public static TsTypeSymbol Undefined { get; } = new TsTypeSymbol("undefined", TsSymbolKind.Undefined);
 
         /// <summary>
         /// Gets the unknown <see cref="TsTypeSymbol"/>.
@@ -207,6 +217,15 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
+        /// Returns a <see cref="String"/> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="String"/> that represents this instance.</returns>
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
+        /// <summary>
         /// Creates an array symbol.
         /// </summary>
         /// <param name="elementType">The type of the element.</param>
@@ -356,8 +375,20 @@ namespace SymbioticTS.Core
         }
     }
 
-    internal class TsTypeSymbolComparer : IEqualityComparer<TsTypeSymbol>
+    internal sealed class TsTypeSymbolComparer : IEqualityComparer<TsTypeSymbol>
     {
+        /// <summary>
+        /// The instance.
+        /// </summary>
+        public static IEqualityComparer<TsTypeSymbol> Instance = new TsTypeSymbolComparer();
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="TsTypeSymbolComparer"/> class from being created.
+        /// </summary>
+        private TsTypeSymbolComparer()
+        {
+        }
+
         /// <summary>
         /// Determines whether the specified objects are equal.
         /// </summary>
