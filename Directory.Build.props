@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project=".\Project.Dependencies.props" />
+
   <PropertyGroup>
     <!-- https://github.com/Microsoft/msbuild/issues/1298 -->
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -26,10 +28,8 @@
 
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning">
-      <Version>2.2.13</Version>
+      <Version>$(NerdbankGitVersioningVersion)</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-
-  <Import Project=".\Project.Dependencies.props" />
 </Project>
