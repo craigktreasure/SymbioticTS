@@ -3,6 +3,8 @@
  * All changes will be lost the next time the file is generated.
  */
 
-export interface IQuadrilateralDto
-{
+// tslint:disable:max-line-length
+
+// tslint:disable-next-line:no-empty-interface
+export interface IQuadrilateralDto {
 }

@@ -106,7 +106,7 @@ namespace SymbioticTS.Core
                     .Write(string.Join(", ", symbol.Interfaces.Select(i => i.Name)));
             }
 
-            writer.WriteLine();
+            writer.Write(" ");
 
             using (writer.Block())
             {
@@ -138,8 +138,6 @@ namespace SymbioticTS.Core
                 }
 
                 // Write the constructor.
-                writer.Write("constructor(");
-
                 var baseProperties = symbol.Base?.Properties ?? Enumerable.Empty<TsPropertySymbol>();
                 var basePropertyInfos = GetConstructorParameters(baseProperties).Apply();
                 var propertyInfos = GetConstructorParameters(symbol.Properties).Apply();
@@ -149,27 +147,32 @@ namespace SymbioticTS.Core
                     .Select(p => $"{p.parameterName}{(p.property.IsOptional ? "?" : string.Empty)}: {GetPropertyTypeIdentifier(p.property)}")
                     .Apply();
 
-                this.WriteCommaSeparatedItems(writer, parameters);
-
-                writer.WriteLine(")");
-                using (writer.Block())
+                if (parameters.Count > 0)
                 {
-                    if (symbol.Base != null)
-                    {
-                        // Make call to super(...).
-                        writer.Write("super(");
-                        this.WriteCommaSeparatedItems(writer, basePropertyInfos.Select(p => p.parameterName).Apply());
-                        writer.WriteLine(");");
+                    writer.Write("constructor(");
 
-                        if (propertyInfos.Any())
+                    this.WriteCommaSeparatedItems(writer, parameters);
+
+                    writer.Write(") ");
+                    using (writer.Block())
+                    {
+                        if (symbol.Base != null)
                         {
-                            writer.WriteLine();
-                        }
-                    }
+                            // Make call to super(...).
+                            writer.Write("super(");
+                            this.WriteCommaSeparatedItems(writer, basePropertyInfos.Select(p => p.parameterName).Apply());
+                            writer.WriteLine(");");
 
-                    foreach (var (property, parameterName) in propertyInfos)
-                    {
-                        writer.WriteLine($"this.{property.Name} = {parameterName};");
+                            if (propertyInfos.Any())
+                            {
+                                writer.WriteLine();
+                            }
+                        }
+
+                        foreach (var (property, parameterName) in propertyInfos)
+                        {
+                            writer.WriteLine($"this.{property.Name} = {parameterName};");
+                        }
                     }
                 }
 
@@ -191,7 +194,7 @@ namespace SymbioticTS.Core
 
             TsTypeSymbol dtoInterface = symbol.DtoInterface;
 
-            writer.WriteLine($"public static fromDto(dto: {dtoInterface.Name}): {symbol.Name}");
+            writer.Write($"public static fromDto(dto: {dtoInterface.Name}): {symbol.Name} ");
 
             using (writer.Block())
             {
@@ -235,7 +238,7 @@ namespace SymbioticTS.Core
             {
                 writer.WriteLine();
 
-                writer.WriteLine($"private static {dtoInterfaceMetadata.TransformMethodName}(dto: {dtoInterfaceSymbol.Name}): {dtoInterfaceMetadata.ClassSymbol.Name}");
+                writer.Write($"private static {dtoInterfaceMetadata.TransformMethodName}(dto: {dtoInterfaceSymbol.Name}): {dtoInterfaceMetadata.ClassSymbol.Name} ");
 
                 using (writer.Block())
                 {
@@ -262,15 +265,19 @@ namespace SymbioticTS.Core
                         .Select(p => $"{p.property.Name}: {(p.requiresDtoTransform ? p.parameterName : $"dto.{p.property.Name}")}")
                         .Apply();
 
-                    writer.WriteLine("return {");
-                    this.WriteCommaSeparatedItems(writer, interfaceInitialization, maxBeforeWrap: 0);
-                    writer.WriteLine();
-                    writer.WriteLine("};");
+                    writer.EnsureNewLine();
+
+                    writer.Write("return ");
+                    using (writer.Block(closeWithNewLine: false))
+                    {
+                        this.WriteCommaSeparatedItems(writer, interfaceInitialization, maxBeforeWrap: 0, indent: false);
+                    }
+                    writer.WriteLine(";");
                 }
             }
         }
 
-        private void WriteCommaSeparatedItems(SourceWriter writer, IReadOnlyList<string> items, int maxBeforeWrap = 3)
+        private void WriteCommaSeparatedItems(SourceWriter writer, IReadOnlyList<string> items, int maxBeforeWrap = 3, bool indent = true)
         {
             if (items.Count <= maxBeforeWrap)
             {
@@ -279,24 +286,32 @@ namespace SymbioticTS.Core
             else
             {
                 writer.EnsureNewLine();
-                using (writer.Indent())
-                {
-                    for (int i = 0; i < items.Count; i++)
-                    {
-                        writer.Write(items[i]);
 
-                        if (i != items.Count - 1)
-                        {
-                            writer.WriteLine(",");
-                        }
+                if (indent)
+                {
+                    writer.IncreaseIndentation();
+                }
+
+                for (int i = 0; i < items.Count; i++)
+                {
+                    writer.Write(items[i]);
+
+                    if (i != items.Count - 1)
+                    {
+                        writer.WriteLine(",");
                     }
+                }
+
+                if (indent)
+                {
+                    writer.DecreaseIndentation();
                 }
             }
         }
 
         private void WriteEnumeration(SourceWriter writer, TsTypeSymbol symbol)
         {
-            writer.WriteLine($"export enum {symbol.Name}");
+            writer.Write($"export enum {symbol.Name} ");
 
             using (writer.Block())
             {
@@ -333,6 +348,8 @@ namespace SymbioticTS.Core
 
         private void WriteInterface(SourceWriter writer, TsTypeSymbol symbol)
         {
+            this.WriteInterfaceDeclarationTsLintRuleAdjustments(writer, symbol);
+
             writer.Write("export interface ").Write(symbol.Name);
 
             if (symbol.Interfaces?.Any() ?? false)
@@ -342,7 +359,7 @@ namespace SymbioticTS.Core
                     .Write(string.Join(", ", symbol.Interfaces.Select(i => i.Name)));
             }
 
-            writer.WriteLine();
+            writer.Write(" ");
 
             using (writer.Block())
             {
@@ -370,6 +387,28 @@ namespace SymbioticTS.Core
                         .Write(GetPropertyTypeIdentifier(property))
                         .WriteLine(";");
                 }
+            }
+        }
+
+        private void WriteInterfaceDeclarationTsLintRuleAdjustments(SourceWriter writer, TsTypeSymbol symbol)
+        {
+            List<string> rulesToDisable = new List<string>();
+
+            if (!symbol.Name.StartsWith("I"))
+            {
+                rulesToDisable.Add("interface-name");
+            }
+
+            if (symbol.Properties.Count == 0)
+            {
+                rulesToDisable.Add("no-empty-interface");
+            }
+
+            if (rulesToDisable.Count > 0)
+            {
+                writer
+                    .Write("// tslint:disable-next-line:")
+                    .WriteLine(string.Join(" ", rulesToDisable));
             }
         }
 
@@ -402,9 +441,17 @@ namespace SymbioticTS.Core
             using (SourceWriter writer = new SourceWriter(fileStream))
             {
                 this.WriteHeader(writer);
+                this.WriteTsLintFileRules(writer);
                 this.WriteImports(writer, symbol);
                 this.WriteObject(writer, symbol);
             }
+        }
+
+        private void WriteTsLintFileRules(SourceWriter writer)
+        {
+            writer
+                .WriteLine("// tslint:disable:max-line-length")
+                .WriteLine();
         }
     }
 }

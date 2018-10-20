@@ -3,8 +3,9 @@
  * All changes will be lost the next time the file is generated.
  */
 
-export interface IViewModelBaseDto
-{
+// tslint:disable:max-line-length
+
+export interface IViewModelBaseDto {
     dateCreated: string;
     dateUpdated?: string;
 }

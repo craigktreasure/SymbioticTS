@@ -3,9 +3,10 @@
  * All changes will be lost the next time the file is generated.
  */
 
+// tslint:disable:max-line-length
+
 import { IClassRequiresTransformDto } from './IClassRequiresTransformDto';
 
-export interface IDtoWithTransformClassPropertyDto
-{
+export interface IDtoWithTransformClassPropertyDto {
     transform?: IClassRequiresTransformDto;
 }

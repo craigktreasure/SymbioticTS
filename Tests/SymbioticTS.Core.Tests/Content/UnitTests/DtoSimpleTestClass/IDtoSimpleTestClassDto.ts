@@ -3,8 +3,9 @@
  * All changes will be lost the next time the file is generated.
  */
 
-export interface IDtoSimpleTestClassDto
-{
+// tslint:disable:max-line-length
+
+export interface IDtoSimpleTestClassDto {
     count: number;
     name?: string;
 }

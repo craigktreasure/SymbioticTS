@@ -3,19 +3,18 @@
  * All changes will be lost the next time the file is generated.
  */
 
+// tslint:disable:max-line-length
+
 import { IClassRequiresTransformDto } from './IClassRequiresTransformDto';
 
-export class ClassRequiresTransform
-{
+export class ClassRequiresTransform {
     public birthdate: Date;
 
-    constructor(birthdate: Date)
-    {
+    constructor(birthdate: Date) {
         this.birthdate = birthdate;
     }
 
-    public static fromDto(dto: IClassRequiresTransformDto): ClassRequiresTransform
-    {
+    public static fromDto(dto: IClassRequiresTransformDto): ClassRequiresTransform {
         const birthdate = new Date(dto.birthdate);
 
         return new ClassRequiresTransform(birthdate);

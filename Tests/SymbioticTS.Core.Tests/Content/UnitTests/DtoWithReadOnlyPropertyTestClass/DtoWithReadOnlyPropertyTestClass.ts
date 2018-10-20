@@ -3,21 +3,20 @@
  * All changes will be lost the next time the file is generated.
  */
 
+// tslint:disable:max-line-length
+
 import { IDtoWithReadOnlyPropertyTestClassDto } from './IDtoWithReadOnlyPropertyTestClassDto';
 
-export class DtoWithReadOnlyPropertyTestClass
-{
+export class DtoWithReadOnlyPropertyTestClass {
     public readonly count: number;
     public name?: string;
 
-    constructor(count: number, name?: string)
-    {
+    constructor(count: number, name?: string) {
         this.count = count;
         this.name = name;
     }
 
-    public static fromDto(dto: IDtoWithReadOnlyPropertyTestClassDto): DtoWithReadOnlyPropertyTestClass
-    {
+    public static fromDto(dto: IDtoWithReadOnlyPropertyTestClassDto): DtoWithReadOnlyPropertyTestClass {
         return new DtoWithReadOnlyPropertyTestClass(dto.count, dto.name);
     }
 }
