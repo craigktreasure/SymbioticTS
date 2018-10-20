@@ -3,8 +3,9 @@
  * All changes will be lost the next time the file is generated.
  */
 
-export interface IDtoWithDateTimeCollectionTestClassDto
-{
+// tslint:disable:max-line-length
+
+export interface IDtoWithDateTimeCollectionTestClassDto {
     count: number;
     birthdate: string[];
 }

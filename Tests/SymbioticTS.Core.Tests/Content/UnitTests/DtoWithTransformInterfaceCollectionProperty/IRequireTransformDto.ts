@@ -3,7 +3,8 @@
  * All changes will be lost the next time the file is generated.
  */
 
-export interface IRequireTransformDto
-{
+// tslint:disable:max-line-length
+
+export interface IRequireTransformDto {
     readonly birthdate: string;
 }

@@ -3,8 +3,9 @@
  * All changes will be lost the next time the file is generated.
  */
 
-export interface IDtoWithOptionalPropertyTestClassDto
-{
+// tslint:disable:max-line-length
+
+export interface IDtoWithOptionalPropertyTestClassDto {
     readonly count?: number;
     name?: string;
 }

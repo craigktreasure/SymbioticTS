@@ -55,10 +55,11 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
-        /// Write within an indented block for the lifetime of the <see cref="IDisposable"/>.
+        /// Write within an indented block for the lifetime of the <see cref="IDisposable" />.
         /// </summary>
-        /// <returns><see cref="IDisposable"/>.</returns>
-        public IDisposable Block()
+        /// <param name="closeWithNewLine">if set to <c>true</c>, the block will close with a new line.</param>
+        /// <returns><see cref="IDisposable" />.</returns>
+        public IDisposable Block(bool closeWithNewLine = true)
         {
             this.WriteLine("{");
 
@@ -67,7 +68,13 @@ namespace SymbioticTS.Core
             return new DisposableAction(() =>
             {
                 this.DecreaseIndentation();
-                this.WriteLine("}");
+                this.EnsureNewLine();
+                this.Write("}");
+
+                if (closeWithNewLine)
+                {
+                    this.EnsureNewLine();
+                }
             });
         }
 

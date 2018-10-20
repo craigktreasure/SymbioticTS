@@ -3,21 +3,20 @@
  * All changes will be lost the next time the file is generated.
  */
 
+// tslint:disable:max-line-length
+
 import { IDtoSimpleTestClassDto } from './IDtoSimpleTestClassDto';
 
-export class DtoSimpleTestClass
-{
+export class DtoSimpleTestClass {
     public count: number;
     public name?: string;
 
-    constructor(count: number, name?: string)
-    {
+    constructor(count: number, name?: string) {
         this.count = count;
         this.name = name;
     }
 
-    public static fromDto(dto: IDtoSimpleTestClassDto): DtoSimpleTestClass
-    {
+    public static fromDto(dto: IDtoSimpleTestClassDto): DtoSimpleTestClass {
         return new DtoSimpleTestClass(dto.count, dto.name);
     }
 }

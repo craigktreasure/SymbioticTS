@@ -3,10 +3,11 @@
  * All changes will be lost the next time the file is generated.
  */
 
+// tslint:disable:max-line-length
+
 import { IBaseShapeDto } from './IBaseShapeDto';
 import { IShapeDto } from './IShapeDto';
 
-export interface ICircleDto extends IBaseShapeDto, IShapeDto
-{
+export interface ICircleDto extends IBaseShapeDto, IShapeDto {
     readonly diameter: number;
 }
