@@ -22,6 +22,7 @@
 
     <authors>Craig Treasure</authors>
     <owners>craigktreasure</owners>
+    <description>A package supporting SymbioticTS.</description>
     <PackageTags>typescript dotnet dotnetcore aspnetcore</PackageTags>
     <PackageProjectUrl>https://github.com/craigktreasure/SymbioticTS</PackageProjectUrl>
     <RepositoryUrl>https://github.com/craigktreasure/SymbioticTS.git</RepositoryUrl>

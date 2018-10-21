@@ -1,0 +1,10 @@
+<Project TreatAsLocalProperty="TaskFolder;TaskAssembly" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TaskFolder>netstandard2.0</TaskFolder>
+    <TaskAssembly>$(MSBuildThisFileDirectory)..\..\tasks\$(TaskFolder)\SymbioticTS.Build.dll</TaskAssembly>
+
+    <SymbioticTSOutputPath Condition="'$(SymbioticTSOutputPath)' == ''">$(MSBuildProjectDirectory)\generated-ts\</SymbioticTSOutputPath>
+  </PropertyGroup>
+
+  <UsingTask TaskName="SymbioticTS.Build.SymbioticTSTransformTask" AssemblyFile="$(TaskAssembly)" />
+</Project>

@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
@@ -28,7 +28,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbioticTS.TestLibrary", "Tests\SymbioticTS.TestLibrary\SymbioticTS.TestLibrary.csproj", "{497F6638-5F77-4D97-97E7-A4FEC5F75252}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestReferenceLibrary", "Tests\Reference\UnitTestReferenceLibrary\UnitTestReferenceLibrary.csproj", "{0C9E46D6-9DAD-4E45-9410-231834456A5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestReferenceLibrary", "Tests\Reference\UnitTestReferenceLibrary\UnitTestReferenceLibrary.csproj", "{0C9E46D6-9DAD-4E45-9410-231834456A5B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbioticTS.Build", "SymbioticTS.Build\SymbioticTS.Build.csproj", "{8E80B31C-E6A8-4D03-A6F4-6637CC8AA296}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{0C9E46D6-9DAD-4E45-9410-231834456A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C9E46D6-9DAD-4E45-9410-231834456A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C9E46D6-9DAD-4E45-9410-231834456A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E80B31C-E6A8-4D03-A6F4-6637CC8AA296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E80B31C-E6A8-4D03-A6F4-6637CC8AA296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E80B31C-E6A8-4D03-A6F4-6637CC8AA296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E80B31C-E6A8-4D03-A6F4-6637CC8AA296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
