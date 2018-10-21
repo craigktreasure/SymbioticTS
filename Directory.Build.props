@@ -5,6 +5,8 @@
   <PropertyGroup>
     <!-- https://github.com/Microsoft/msbuild/issues/1298 -->
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+
+    <Configuration Condition="'$(Configuration)'==''">Debug</Configuration>
   </PropertyGroup>
 
   <PropertyGroup>
