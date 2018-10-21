@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SymbioticTS.Build" Version="0.1-*" PrivateAssets="All" />
+    <PackageReference Include="SymbioticTS.Abstractions" Version="0.1-*" />
+  </ItemGroup>
+
+</Project>
