@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
 
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <description>Provides the SymbioticTS abstractions.</description>
   </PropertyGroup>
 
 </Project>
