@@ -17,7 +17,7 @@ steps:
     version: $(dotnetSdkVersion)
 
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+  displayName: 'Build SymbioticTS.sln $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: dotnet test $(buildConfiguration)
@@ -26,3 +26,6 @@ steps:
     projects: '**/*.Tests.csproj'
     publishTestResults: true
     arguments: '--no-build --no-restore -c $(buildConfiguration)'
+
+- script: dotnet build Example\Example.sln --configuration $(buildConfiguration)
+  displayName: 'Build Example.sln $(buildConfiguration)'
