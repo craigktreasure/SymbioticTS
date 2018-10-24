@@ -20,6 +20,11 @@
 
     <LangVersion>Latest</LangVersion>
 
+    <MSBuildTreatWarningsAsErrors>false</MSBuildTreatWarningsAsErrors>
+    <MSBuildTreatWarningsAsErrors Condition="'$(AGENT_ID)' != ''">true</MSBuildTreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors Condition="'$(AGENT_ID)' != ''">true</TreatWarningsAsErrors>
+
     <authors>Craig Treasure</authors>
     <owners>craigktreasure</owners>
     <description>A package supporting SymbioticTS.</description>
