@@ -9,6 +9,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   dotnetSdkVersion: '2.1.403'
+  publishArtifacts: false
 
 steps:
 - task: DotNetCoreInstaller@0
@@ -29,3 +30,19 @@ steps:
 
 - script: dotnet build Example\Example.sln --configuration $(buildConfiguration)
   displayName: Build Example.sln ($(buildConfiguration))
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish __output
+  condition: or(and(succeededOrFailed(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI')), variables.publishArtifacts)
+  inputs:
+    PathtoPublish: __output
+    ArtifactName: __output
+    ArtifactType: Container
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish __nuget
+  condition: or(and(succeededOrFailed(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI')), variables.publishArtifacts)
+  inputs:
+    PathtoPublish: __nuget
+    ArtifactName: __nuget
+    ArtifactType: Container
