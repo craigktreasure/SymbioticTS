@@ -2,7 +2,7 @@
 
 ## Status: Beta
 
-[![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/craigktreasure.SymbioticTS)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=13)
+[![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/SymbioticTS-CI)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=15)
 
 The project is currently in what I would consider early beta status.
 
@@ -10,7 +10,7 @@ The project is currently in what I would consider early beta status.
 
 Make consuming objects defined in a .NET backend eaiser to consume from TypeScript code.
 
-As you pass objects to a frontend in json format, you lose some type fidelity. For example, if you have an object that has a property that is a `DateTime`, that object will be serialized to a `string`. Many projects similar to this would either generate a type definition that says the object is either a `Date`, `string`, or `any`. The truth is, after the json is parsed, it is a `string`. But, you want it to be parsed as a `Date`. This project will provide types that represent the true json that can then be converted to another object that is meant to be consumed by the rest of your application with the types that better map to your original .NET type. This prevents bugs and handles geneating the boilerplate code for you.
+As you pass objects to a frontend, you lose some type fidelity due to the json serialization. For example, if you have an object that has a property that is a `DateTime`, that object will be serialized to a `string`. Many projects similar to this would either generate a type definition that says the object is either a `Date`, `string`, or `any`. The truth is, after the json is serialized, it is a `string`. You need an object that can understand the serialization format and convert it to something that you expect to be able to work with. This project will provide types that represent the serialized json that can then be converted to another object that is meant to be consumed by the rest of your application with the types that better map to your original .NET type. This prevents bugs and handles generating the boilerplate code for you.
 
 ## Features
 
