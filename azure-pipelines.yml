@@ -17,10 +17,10 @@ steps:
     version: $(dotnetSdkVersion)
 
 - script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build SymbioticTS.sln $(buildConfiguration)'
+  displayName: Build SymbioticTS.sln ($(buildConfiguration))
 
 - task: DotNetCoreCLI@2
-  displayName: dotnet test $(buildConfiguration)
+  displayName: Run tests ($(buildConfiguration))
   inputs:
     command: test
     projects: '**/*.Tests.csproj'
@@ -28,4 +28,20 @@ steps:
     arguments: '--no-build --no-restore -c $(buildConfiguration)'
 
 - script: dotnet build Example\Example.sln --configuration $(buildConfiguration)
-  displayName: 'Build Example.sln $(buildConfiguration)'
+  displayName: Build Example.sln ($(buildConfiguration))
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish __output
+  condition: and(succeededOrFailed(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
+  inputs:
+    PathtoPublish: __output
+    ArtifactName: __output
+    ArtifactType: Container
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish __nuget
+  condition: and(succeededOrFailed(), in(variables['Build.Reason'], 'IndividualCI', 'BatchedCI'))
+  inputs:
+    PathtoPublish: __nuget
+    ArtifactName: __nuget
+    ArtifactType: Container
