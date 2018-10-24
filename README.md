@@ -1,10 +1,10 @@
 # SymbioticTS
 
+## Status: Beta
+
 [![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/craigktreasure.SymbioticTS)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=13)
 
-## Status: Planning
-
-This project is not yet "real" and is currently being planned and developed.
+The project is currently in what I would consider early beta status.
 
 ## Goals
 
@@ -32,11 +32,11 @@ As you pass objects to a frontend in json format, you lose some type fidelity. F
 
 ## Workflow
 
-* Add the SymbioticTypeScript.MSBuild NuGet package to a project.
-* Configure output location.
-* Attribute an interface with `TsInterface` or a class with `TsDto` or `TsClass`.
+* Add the SymbioticTS.Build NuGet package to a project.
+* Configure output location using the `SymbioticTSOutputPath` MSBuild property.
+* Attribute a class with `TsDto` or `TsClass` or an interface with `TsInterface`.
 * Build
-  * Discover the full closure of the built assembly dependencies (except for .NET assemblies).
+  * Discovers the full closure of the built assembly dependencies (excluding .NET assemblies).
   * Discover public or internal attributed classes and interfaces.
   * Generate TypeScript objects for attributed and supporting .NET objects.
 
@@ -64,25 +64,19 @@ export interface IRectangleDto
     readonly dateCreated: string;
 }
 
-export class RectangleDto
+export class Rectangle
 {
-    private readonly _dateCreated: Date;
-
-    public get dateCreated(): Date {
-        return this._dateCreated;
-    }
+    public readonly dateCreated: Date;
 
     constructor(public x: number, public y: number, dateCreated: Date) {
-        this._dateCreated = dateCreated;
+        this.dateCreated = dateCreated;
     }
 
     public static fromDto(dto: IRectangleDto): Rectangle
     {
-        const x = dto.x;
-        const y = dto.y;
         const dateCreated = new Date(Date.parse(dto.dateCreated))
 
-        return new Rectangle(x, y, dateCreated);
+        return new Rectangle(dto.x, dto.y, dateCreated);
     }
 }
 ```
