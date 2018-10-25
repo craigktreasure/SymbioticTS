@@ -2,9 +2,13 @@
 
 ## Status: Beta
 
-[![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/SymbioticTS-CI)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=15)
-
 The project is currently in what I would consider early beta status.
+
+|  | Status |
+| ---- | ---- |
+| Build | [![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/SymbioticTS-CI)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=15) |
+| SymbioticTS.Abstractions | [![SymbioticTS.Abstractions](https://img.shields.io/nuget/vpre/SymbioticTS.Abstractions.svg?style=for-the-badge)](https://www.nuget.org/packages/SymbioticTS.Abstractions) |
+| SymbioticTS.Build | [![SymbioticTS.Build](https://img.shields.io/nuget/vpre/SymbioticTS.Build.svg?style=for-the-badge)](https://www.nuget.org/packages/SymbioticTS.Build) |
 
 ## Goals
 
