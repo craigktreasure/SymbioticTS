@@ -1,6 +1,7 @@
 using SymbioticTS.Core.Visitors;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -9,6 +10,8 @@ namespace SymbioticTS.Core
     internal class TsTypeManager
     {
         private readonly TsTypeManagerOptions options;
+
+        private static readonly AssemblyName abstractionsAssemblyName = typeof(Abstractions.TsDtoAttribute).Assembly.GetName();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TsTypeManager"/> class.
@@ -119,21 +122,31 @@ namespace SymbioticTS.Core
                 yield break;
             }
 
-            if (HasSymbioticTSAbstractionsReference(assembly))
+            IReadOnlyList<AssemblyName> referencedAssemblies = assembly.GetReferencedAssemblies()
+                .Where(assemblyName => !assemblyName.IsNetFramework())
+                .Apply();
+
+            if (referencedAssemblies.Count == 0)
+            {
+                yield break;
+            }
+
+            if (HasSymbioticTSAbstractionsReference(referencedAssemblies))
             {
                 yield return assembly;
             }
 
-            foreach (Assembly referencedAssembly in assembly.GetReferencedAssemblies()
-                .SelectMany(a => DiscoverAllSupportingAssemblies(Assembly.Load(a))))
+            foreach (Assembly referencedAssembly in referencedAssemblies
+                .Select(Assembly.Load)
+                .SelectMany(DiscoverAllSupportingAssemblies))
             {
                 yield return referencedAssembly;
             }
         }
 
-        private static bool HasSymbioticTSAbstractionsReference(Assembly assembly)
+        private static bool HasSymbioticTSAbstractionsReference(IEnumerable<AssemblyName> referencedAssemblies)
         {
-            return assembly.GetReferencedAssemblies().Any(name => name.Name == "SymbioticTS.Abstractions");
+            return referencedAssemblies.Any(name => AssemblyNameComparer.Instance.Equals(name, abstractionsAssemblyName));
         }
 
         private static bool IsTypeScriptType(Type type)
