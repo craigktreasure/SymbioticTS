@@ -15,7 +15,18 @@ namespace SymbioticTS.Core
         /// <param name="outputPath">The output path.</param>
         public void Transform(string inputAssemblyPath, string outputPath)
         {
-            this.Transform(inputAssemblyPath, outputPath, out _);
+            this.Transform(inputAssemblyPath, outputPath, SymbioticTransformerOptions.Default, out _);
+        }
+
+        /// <summary>
+        /// Transforms the specified input assembly.
+        /// </summary>
+        /// <param name="inputAssemblyPath">The input assembly path.</param>
+        /// <param name="outputPath">The output path.</param>
+        /// <param name="transformerOptions">The transformer options.</param>
+        public void Transform(string inputAssemblyPath, string outputPath, SymbioticTransformerOptions transformerOptions)
+        {
+            this.Transform(inputAssemblyPath, outputPath, transformerOptions, out _);
         }
 
         /// <summary>
@@ -25,6 +36,18 @@ namespace SymbioticTS.Core
         /// <param name="outputPath">The output path.</param>
         /// <param name="filesCreated">The files created.</param>
         public void Transform(string inputAssemblyPath, string outputPath, out IReadOnlyCollection<string> filesCreated)
+        {
+            this.Transform(inputAssemblyPath, outputPath, SymbioticTransformerOptions.Default, out filesCreated);
+        }
+
+        /// <summary>
+        /// Transforms the specified input assembly.
+        /// </summary>
+        /// <param name="inputAssemblyPath">The input assembly path.</param>
+        /// <param name="outputPath">The output path.</param>
+        /// <param name="transformerOptions">The transformer options.</param>
+        /// <param name="filesCreated">The files created.</param>
+        public void Transform(string inputAssemblyPath, string outputPath, SymbioticTransformerOptions transformerOptions, out IReadOnlyCollection<string> filesCreated)
         {
             if (string.IsNullOrEmpty(inputAssemblyPath) || !File.Exists(inputAssemblyPath))
             {
@@ -36,19 +59,27 @@ namespace SymbioticTS.Core
                 throw new ArgumentException($"The specified output path is not valid: '{outputPath}'.", nameof(outputPath));
             }
 
-            TsTypeManager typeManager = new TsTypeManager();
+            if (transformerOptions == null)
+            {
+                throw new ArgumentNullException(nameof(transformerOptions));
+            }
 
-            Assembly assembly = Assembly.LoadFrom(inputAssemblyPath);
-            IReadOnlyList<Assembly> assemblies = typeManager.DiscoverAssemblies(assembly);
-            IReadOnlyList<Type> types = typeManager.DiscoverTypes(assemblies);
-            IReadOnlyList<TsTypeSymbol> typeSymbols = typeManager.ResolveTypeSymbols(types);
+            using (AssemblyResolutionManager assemblyResolver = TsAssemblyResolutionManager.Create(inputAssemblyPath, transformerOptions))
+            {
+                TsTypeManager typeManager = new TsTypeManager();
 
-            IFileSink fileSink = new DirectoryFileSink(outputPath);
-            AuditingFileSink auditingFileSink = new AuditingFileSink(fileSink);
-            TsSymbolWriter symbolWriter = new TsSymbolWriter(auditingFileSink);
-            symbolWriter.WriteSymbols(typeSymbols);
+                Assembly assembly = Assembly.LoadFrom(inputAssemblyPath);
+                IReadOnlyList<Assembly> assemblies = typeManager.DiscoverAssemblies(assembly);
+                IReadOnlyList<Type> types = typeManager.DiscoverTypes(assemblies);
+                IReadOnlyList<TsTypeSymbol> typeSymbols = typeManager.ResolveTypeSymbols(types);
 
-            filesCreated = auditingFileSink.FilesCreated;
+                IFileSink fileSink = new DirectoryFileSink(outputPath);
+                AuditingFileSink auditingFileSink = new AuditingFileSink(fileSink);
+                TsSymbolWriter symbolWriter = new TsSymbolWriter(auditingFileSink);
+                symbolWriter.WriteSymbols(typeSymbols);
+
+                filesCreated = auditingFileSink.FilesCreated;
+            }
         }
     }
 }
