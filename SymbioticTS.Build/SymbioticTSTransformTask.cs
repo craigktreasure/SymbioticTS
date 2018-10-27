@@ -57,19 +57,11 @@ namespace SymbioticTS.Build
         {
             this.Log.LogMessage(MessageImportance.Normal, $"{nameof(SymbioticTS)}: Transforming types from {this.InputAssemblyPath} to {this.OutputPath}.");
 
-            IFileSink fileSink = new DirectoryFileSink(this.OutputPath);
-            TsSymbolWriter symbolWriter = new TsSymbolWriter(fileSink);
-            TsTypeManager typeManager = new TsTypeManager();
+            SymbioticTransformer transformer = new SymbioticTransformer();
 
-            Assembly assembly = Assembly.LoadFrom(this.InputAssemblyPath);
+            transformer.Transform(this.InputAssemblyPath, this.OutputPath, out IReadOnlyCollection<string> filesCreated);
 
-            IReadOnlyList<Assembly> assemblies = typeManager.DiscoverAssemblies(assembly);
-            IReadOnlyList<Type> types = typeManager.DiscoverTypes(assemblies);
-            IReadOnlyList<TsTypeSymbol> typeSymbols = typeManager.ResolveTypeSymbols(types);
-
-            this.Log.LogMessage(MessageImportance.Normal, $"{nameof(SymbioticTS)}: Found and transforming {typeSymbols.Count} types.");
-
-            symbolWriter.WriteSymbols(typeSymbols);
+            this.Log.LogMessage(MessageImportance.Normal, $"{nameof(SymbioticTS)}: Found and transformed {filesCreated.Count} types.");
 
             return true;
         }
