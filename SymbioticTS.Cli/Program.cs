@@ -21,7 +21,12 @@ namespace SymbioticTS.Cli
         {
             SymbioticTransformer transformer = new SymbioticTransformer();
 
-            transformer.Transform(options.InputAssemblyPath, options.OutputPath, out IReadOnlyCollection<string> filesCreated);
+            SymbioticTransformerOptions transformerOptions = new SymbioticTransformerOptions
+            {
+                AssemblyReferencesFilePath = options.AssemblyReferencesFilePath
+            };
+
+            transformer.Transform(options.InputAssemblyPath, options.OutputPath, transformerOptions, out IReadOnlyCollection<string> filesCreated);
 
             Console.WriteLine($"Transformed {filesCreated.Count} objects to {options.OutputPath}:");
 
