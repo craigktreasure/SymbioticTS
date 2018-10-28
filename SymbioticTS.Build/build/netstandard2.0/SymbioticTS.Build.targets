@@ -5,8 +5,16 @@
     <_SymbioticTSInputPath Condition="'$(SymbioticTSInputPath)' == ''">$(TargetPath)</_SymbioticTSInputPath>
   </PropertyGroup>
 
+  <Target Name="SymbioticTSWriteAssemblyReferences" AfterTargets="ResolveAssemblyReferences">
+    <PropertyGroup>
+      <_SymbioticTSAssemblyReferencesFilePath>$(IntermediateOutputPath)resolved-references.txt</_SymbioticTSAssemblyReferencesFilePath>
+    </PropertyGroup>
+
+    <WriteLinesToFile Lines="@(_ResolveAssemblyReferenceResolvedFiles)" File="$(_SymbioticTSAssemblyReferencesFilePath)" Overwrite="true" />
+  </Target>
+
   <Target Name="SymbioticTSTransform" AfterTargets="Build">
-    <SymbioticTSTransformTask InputAssemblyPath="$(_SymbioticTSInputPath)" OutputPath="$(SymbioticTSOutputPath)" />
+    <SymbioticTSTransformTask InputAssemblyPath="$(_SymbioticTSInputPath)" OutputPath="$(SymbioticTSOutputPath)" AssemblyReferencesPath="$(_SymbioticTSAssemblyReferencesFilePath)" />
   </Target>
 
 </Project>
