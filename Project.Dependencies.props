@@ -3,7 +3,7 @@
   <PropertyGroup>
     <NerdbankGitVersioningVersion>2.2.13</NerdbankGitVersioningVersion>
     <MicrosoftNETTestSdkVersion>15.9.0</MicrosoftNETTestSdkVersion>
-    <XUnitVersion>2.4.0</XUnitVersion>
+    <XUnitVersion>2.4.1</XUnitVersion>
     <MicrosoftBuildFrameworkVersion>15.7.179</MicrosoftBuildFrameworkVersion>
     <MicrosoftBuildUtilitiesCoreVersion>$(MicrosoftBuildFrameworkVersion)</MicrosoftBuildUtilitiesCoreVersion>
   </PropertyGroup>
