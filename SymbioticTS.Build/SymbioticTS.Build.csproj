@@ -6,7 +6,8 @@
 
   <!-- Pack settings -->
   <PropertyGroup>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!-- Disabled until we can properly support assembly isolation with unloading in .NET Core 3. -->
+    <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
 
     <!-- Suppresses the warnings about the package not having assemblies in lib/*/.dll.-->
     <NoPackageAnalysis>true</NoPackageAnalysis>
