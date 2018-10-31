@@ -5,6 +5,23 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
+  <!-- Pack settings -->
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- Suppresses the warnings about the package not having assemblies in lib/*/.dll.-->
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <NuspecFile>$(MSBuildProjectName).nuspec</NuspecFile>
+
+    <PackageId>SymbioticTS.MSBuild</PackageId>
+    <description>Enables SymbioticTS MSBuild support.</description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
+    <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.3.0" />
   </ItemGroup>
@@ -12,5 +29,34 @@
   <ItemGroup>
     <ProjectReference Include="..\SymbioticTS.Core\SymbioticTS.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="build\*" PackagePath="build\netstandard2.0\" />
+  </ItemGroup>
+
+  <!-- Initializes the Nuspec properties. -->
+  <Target Name="InitializeNuspecProps" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <NuspecProperties>$(NuspecProperties);id=$(PackageId)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);description=$(description)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);owners=$(owners)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);authors=$(authors)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);tags=$(PackageTags)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);version=$(PackageVersion)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);projectUrl=$(PackageProjectUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);repositoryType=$(RepositoryType)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);repositoryUrl=$(RepositoryUrl)</NuspecProperties>
+      <NuspecProperties>$(NuspecProperties);outputPath=$([MSBuild]::NormalizeDirectory($(OutputPath)))</NuspecProperties>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Executes /t:Publish for all target frameworks before packing. -->
+  <Target Name="PublishAll" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <_TargetFramework Condition="'$(TargetFrameworks)' != ''" Include="$(TargetFrameworks)" />
+      <_TargetFramework Condition="'$(TargetFramework)' != ''" Include="$(TargetFramework)" />
+    </ItemGroup>
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="Publish" Properties="TargetFramework=%(_TargetFramework.Identity)" />
+  </Target>
 
 </Project>

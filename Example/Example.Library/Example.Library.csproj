@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SymbioticTS.Build" Version="0.1-*" PrivateAssets="All" />
+    <PackageReference Include="SymbioticTS.MSBuild" Version="0.1-*" PrivateAssets="All" />
     <PackageReference Include="SymbioticTS.Abstractions" Version="0.1-*" />
   </ItemGroup>
 
