@@ -36,10 +36,17 @@ As you pass objects to a frontend, you lose some type fidelity due to the json s
 
 ## Workflow
 
-* Add the `SymbioticTS.Abstractions` NuGet package to a project.
+* Add the [`SymbioticTS.Abstractions`](https://www.nuget.org/packages/SymbioticTS.Abstractions) NuGet package to a project.
 * Attribute a class with `TsDto` or `TsClass` or an interface with `TsInterface`.
-* Add the `SymbioticTS.MSBuild` NuGet package to the project to hook up MSBuild integration.
-* Configure output location using the `SymbioticTSOutputPath` MSBuild property.
+* Add the [`SymbioticTS.MSBuild`](https://www.nuget.org/packages/SymbioticTS.MSBuild) NuGet package to the project to hook up MSBuild integration.
+* Configure the output location by setting the `SymbioticTSOutputPath` MSBuild property:
+
+  ```xml
+  <PropertyGroup>
+    <SymbioticTSOutputPath>ClientApp\src\server-models\</SymbioticTSOutputPath>
+  </PropertyGroup>
+  ```
+
 * Build
 
 ## Examples
