@@ -21,5 +21,11 @@ namespace SymbioticTS.Cli
         /// </summary>
         [Option('o', "output", Required = true, HelpText = "The path to write the transfomed objects.")]
         public string OutputPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether output is silent.
+        /// </summary>
+        [Option("silent", HelpText = "Omit console output except for errors.")]
+        public bool Silent { get; set; }
     }
 }
