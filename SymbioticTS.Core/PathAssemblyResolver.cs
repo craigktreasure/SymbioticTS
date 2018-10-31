@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace SymbioticTS.Core
 {
@@ -27,6 +28,18 @@ namespace SymbioticTS.Core
         /// <exception cref="DirectoryNotFoundException"></exception>
         public static PathAssemblyResolver Create(string path)
         {
+            return Create(path, AssemblyLoadContext.Default);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="PathAssemblyResolver" /> from the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="loadContext">The lassembly oad context.</param>
+        /// <returns>PathAssemblyResolver.</returns>
+        /// <exception cref="DirectoryNotFoundException"></exception>
+        public static PathAssemblyResolver Create(string path, AssemblyLoadContext loadContext)
+        {
             if (!Directory.Exists(path))
             {
                 throw new DirectoryNotFoundException(path);
@@ -34,7 +47,7 @@ namespace SymbioticTS.Core
 
             IEnumerable<string> assemblyPaths = Directory.EnumerateFiles(path, "*.dll", SearchOption.TopDirectoryOnly);
 
-            return new PathAssemblyResolver(StaticAssemblyResolver.Create(assemblyPaths));
+            return new PathAssemblyResolver(StaticAssemblyResolver.Create(assemblyPaths, loadContext));
         }
 
         /// <summary>

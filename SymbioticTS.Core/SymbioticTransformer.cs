@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace SymbioticTS.Core
 {
@@ -64,11 +65,13 @@ namespace SymbioticTS.Core
                 throw new ArgumentNullException(nameof(transformerOptions));
             }
 
-            using (TsAssemblyResolutionManger assemblyResolver = TsAssemblyResolutionManger.Create(inputAssemblyPath, transformerOptions))
-            {
-                TsTypeManager typeManager = new TsTypeManager();
+            Assembly assembly = Assembly.LoadFile(inputAssemblyPath);
+            AssemblyLoadContext loadContext = AssemblyLoadContext.GetLoadContext(assembly);
 
-                Assembly assembly = Assembly.LoadFrom(inputAssemblyPath);
+            using (AssemblyResolutionManager assemblyResolver = TsAssemblyResolutionManager.Create(inputAssemblyPath, transformerOptions, loadContext))
+            {
+                TsTypeManager typeManager = new TsTypeManager(assemblyResolver);
+
                 IReadOnlyList<Assembly> assemblies = typeManager.DiscoverAssemblies(assembly);
                 IReadOnlyList<Type> types = typeManager.DiscoverTypes(assemblies);
                 IReadOnlyList<TsTypeSymbol> typeSymbols = typeManager.ResolveTypeSymbols(types);

@@ -9,25 +9,31 @@ namespace SymbioticTS.Core
 {
     internal class TsTypeManager
     {
+        private readonly IAssemblyResolver assemblyResolver;
+
         private readonly TsTypeManagerOptions options;
 
         private static readonly AssemblyName abstractionsAssemblyName = typeof(Abstractions.TsDtoAttribute).Assembly.GetName();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TsTypeManager"/> class.
+        /// Initializes a new instance of the <see cref="TsTypeManager" /> class.
         /// </summary>
-        public TsTypeManager()
-            : this(TsTypeManagerOptions.Default)
+        /// <param name="assemblyResolver">The assembly resolver.</param>
+        public TsTypeManager(IAssemblyResolver assemblyResolver)
+            : this(TsTypeManagerOptions.Default, assemblyResolver)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TsTypeManager"/> class.
+        /// Initializes a new instance of the <see cref="TsTypeManager" /> class.
         /// </summary>
         /// <param name="options">The options.</param>
-        public TsTypeManager(TsTypeManagerOptions options)
+        /// <param name="assemblyResolver">The assembly resolver.</param>
+        /// <exception cref="ArgumentNullException">options</exception>
+        public TsTypeManager(TsTypeManagerOptions options, IAssemblyResolver assemblyResolver)
         {
             this.options = options ?? throw new ArgumentNullException(nameof(options));
+            this.assemblyResolver = assemblyResolver;
         }
 
         /// <summary>
@@ -37,7 +43,7 @@ namespace SymbioticTS.Core
         /// <returns><see cref="IReadOnlyList{T}"/> of <see cref="Assembly"/>.</returns>
         public IReadOnlyList<Assembly> DiscoverAssemblies(Assembly assembly)
         {
-            return DiscoverAllSupportingAssemblies(assembly).Distinct().Apply();
+            return this.DiscoverAllSupportingAssemblies(assembly).Distinct().Apply();
         }
 
         /// <summary>
@@ -115,7 +121,7 @@ namespace SymbioticTS.Core
             return results;
         }
 
-        private static IEnumerable<Assembly> DiscoverAllSupportingAssemblies(Assembly assembly)
+        private IEnumerable<Assembly> DiscoverAllSupportingAssemblies(Assembly assembly)
         {
             if (assembly.IsNetFramework())
             {
@@ -137,8 +143,8 @@ namespace SymbioticTS.Core
             }
 
             foreach (Assembly referencedAssembly in referencedAssemblies
-                .Select(Assembly.Load)
-                .SelectMany(DiscoverAllSupportingAssemblies))
+                .Select(this.assemblyResolver.Resolve)
+                .SelectMany(this.DiscoverAllSupportingAssemblies))
             {
                 yield return referencedAssembly;
             }

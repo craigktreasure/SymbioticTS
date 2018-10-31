@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 
 namespace SymbioticTS.Core
 {
-    internal class AssemblyResolutionManager : IDisposable
+    internal class AssemblyResolutionManager : IDisposable, IAssemblyResolver
     {
-        private readonly AssemblyLoadContext assemblyLoadContext;
+        private AssemblyLoadContext assemblyLoadContext;
 
         private List<IAssemblyResolver> assemblyResolvers = new List<IAssemblyResolver>();
+
+        private bool disposedValue = false;
 
         private bool handlersRegistered = false;
 
@@ -56,6 +59,14 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        /// <summary>
         /// Registers this assembly resolver handlers.
         /// </summary>
         public void RegisterHandlers()
@@ -66,6 +77,42 @@ namespace SymbioticTS.Core
 
                 this.assemblyLoadContext.Resolving += this.AssemblyResolvingHandler;
             }
+        }
+
+        /// <summary>
+        /// Resolves the specified assembly.
+        /// </summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName" /> to resolve.</param>
+        /// <returns>An <see cref="Assembly" />.</returns>
+        /// <exception cref="FileNotFoundException">Could not resolve an Assembly for the {assemblyName.Name}</exception>
+        public Assembly Resolve(AssemblyName assemblyName)
+        {
+            if (this.TryResolve(assemblyName, out Assembly resolvedAssembly))
+            {
+                return resolvedAssembly;
+            }
+
+            throw new FileNotFoundException($"Could not resolve an Assembly for the {assemblyName.Name} assembly.");
+        }
+
+        /// <summary>
+        /// Tries to resolve the specified assembly.
+        /// </summary>
+        /// <param name="assemblyName">The <see cref="AssemblyName" /> to resolve.</param>
+        /// <param name="resolvedAssembly">The resolved <see cref="Assembly" />.</param>
+        /// <returns><c>true</c> if resolution was successful, <c>false</c> otherwise.</returns>
+        public bool TryResolve(AssemblyName assemblyName, out Assembly resolvedAssembly)
+        {
+            foreach (IAssemblyResolver assemblyResolver in this.assemblyResolvers)
+            {
+                if (assemblyResolver.TryResolve(assemblyName, out resolvedAssembly))
+                {
+                    return true;
+                }
+            }
+
+            resolvedAssembly = null;
+            return false;
         }
 
         /// <summary>
@@ -81,6 +128,26 @@ namespace SymbioticTS.Core
             }
         }
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposedValue)
+            {
+                if (disposing)
+                {
+                    this.UnregisterHandlers();
+                }
+
+                this.assemblyResolvers = null;
+                this.assemblyLoadContext = null;
+
+                this.disposedValue = true;
+            }
+        }
+
         private Assembly AssemblyResolvingHandler(AssemblyLoadContext assemblyLoadContext, AssemblyName resolvingAssemblyName)
         {
             foreach (IAssemblyResolver assemblyResolver in this.assemblyResolvers)
@@ -93,31 +160,5 @@ namespace SymbioticTS.Core
 
             return null;
         }
-
-        #region IDisposable Support
-
-        private bool disposedValue = false;
-
-        public void Dispose()
-        {
-            this.Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposedValue)
-            {
-                if (disposing)
-                {
-                    this.UnregisterHandlers();
-                }
-
-                this.assemblyResolvers = null;
-
-                this.disposedValue = true;
-            }
-        }
-
-        #endregion IDisposable Support
     }
 }

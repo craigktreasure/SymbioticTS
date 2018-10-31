@@ -2,20 +2,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace SymbioticTS.Core
 {
     internal sealed class StaticAssemblyResolver : IAssemblyResolver
     {
-        private readonly IReadOnlyDictionary<AssemblyName, string> assemblyNameToPathMap;
+        private readonly IReadOnlyDictionary<string, string> assemblyNameToPathMap;
+
+        private readonly AssemblyLoadContext loadContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StaticAssemblyResolver"/> class.
+        /// Initializes a new instance of the <see cref="StaticAssemblyResolver" /> class.
         /// </summary>
         /// <param name="assemblyNameToPathMap">The assembly name to path map.</param>
-        private StaticAssemblyResolver(IReadOnlyDictionary<AssemblyName, string> assemblyNameToPathMap)
+        /// <param name="loadContext">The assembly load context.</param>
+        private StaticAssemblyResolver(IReadOnlyDictionary<string, string> assemblyNameToPathMap, AssemblyLoadContext loadContext)
         {
             this.assemblyNameToPathMap = assemblyNameToPathMap;
+            this.loadContext = loadContext;
         }
 
         /// <summary>
@@ -25,7 +30,19 @@ namespace SymbioticTS.Core
         /// <returns>A <see cref="StaticAssemblyResolver"/>.</returns>
         public static StaticAssemblyResolver Create(IEnumerable<string> assemblyPaths)
         {
-            return new StaticAssemblyResolver(assemblyPaths.ToDictionary(AssemblyName.GetAssemblyName, AssemblyNameComparer.Instance));
+            return Create(assemblyPaths, AssemblyLoadContext.Default);
+        }
+
+        /// <summary>
+        /// Creates a <see cref="StaticAssemblyResolver" /> from the specified assembly paths.
+        /// </summary>
+        /// <param name="assemblyPaths">The assembly paths.</param>
+        /// <param name="loadContext">The assembly load context.</param>
+        /// <returns>A <see cref="StaticAssemblyResolver" />.</returns>
+        public static StaticAssemblyResolver Create(IEnumerable<string> assemblyPaths, AssemblyLoadContext loadContext)
+        {
+            var assemblyNameToPathMap = assemblyPaths.ToDictionary(Path.GetFileNameWithoutExtension);
+            return new StaticAssemblyResolver(assemblyNameToPathMap, loadContext);
         }
 
         /// <summary>
@@ -54,9 +71,9 @@ namespace SymbioticTS.Core
         {
             resolvedAssembly = null;
 
-            if (this.assemblyNameToPathMap.TryGetValue(assemblyName, out string resolvedAssemblyPath))
+            if (this.assemblyNameToPathMap.TryGetValue(assemblyName.Name, out string resolvedAssemblyPath))
             {
-                resolvedAssembly = Assembly.LoadFrom(resolvedAssemblyPath);
+                resolvedAssembly = this.loadContext.LoadFromAssemblyPath(resolvedAssemblyPath);
                 return true;
             }
 
