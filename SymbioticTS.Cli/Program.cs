@@ -28,11 +28,14 @@ namespace SymbioticTS.Cli
 
             transformer.Transform(options.InputAssemblyPath, options.OutputPath, transformerOptions, out IReadOnlyCollection<string> filesCreated);
 
-            Console.WriteLine($"Transformed {filesCreated.Count} objects to {options.OutputPath}:");
-
-            foreach (string file in filesCreated)
+            if (!options.Silent)
             {
-                Console.WriteLine($"    {file}");
+                Console.WriteLine($"Transformed {filesCreated.Count} objects to {options.OutputPath}:");
+
+                foreach (string file in filesCreated)
+                {
+                    Console.WriteLine($"    {file}");
+                }
             }
         }
     }
