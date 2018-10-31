@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <PropertyGroup>
+    <_SymbioticTSInputPath Condition="'$(SymbioticTSInputPath)' == ''">$(TargetPath)</_SymbioticTSInputPath>
+  </PropertyGroup>
+
+  <Target Name="SymbioticTSWriteAssemblyReferences" AfterTargets="ResolveAssemblyReferences">
+    <PropertyGroup>
+      <_SymbioticTSAssemblyReferencesFilePath>$(IntermediateOutputPath)resolved-references.txt</_SymbioticTSAssemblyReferencesFilePath>
+    </PropertyGroup>
+
+    <WriteLinesToFile Lines="@(_ResolveAssemblyReferenceResolvedFiles)" File="$(_SymbioticTSAssemblyReferencesFilePath)" Overwrite="true" />
+  </Target>
+
+  <Target Name="SymbioticTSTransform" AfterTargets="Build">
+    <PropertyGroup>
+      <_SymbioticTSTransformArguments>--input "$(_SymbioticTSInputPath)"</_SymbioticTSTransformArguments>
+      <_SymbioticTSTransformArguments>$(_SymbioticTSTransformArguments) --output "$(SymbioticTSOutputPath.TrimEnd('\'))"</_SymbioticTSTransformArguments>
+      <_SymbioticTSTransformArguments>$(_SymbioticTSTransformArguments) --assembly-references-file "$(_SymbioticTSAssemblyReferencesFilePath)"</_SymbioticTSTransformArguments>
+      <_SymbioticTSTransformArguments>$(_SymbioticTSTransformArguments) --silent</_SymbioticTSTransformArguments>
+    </PropertyGroup>
+
+    <Exec Command="$(SymbioticTSExe) $(_SymbioticTSTransformArguments)" />
+  </Target>
+
+</Project>

@@ -1,0 +1,8 @@
+<Project TreatAsLocalProperty="FrameworkFolder" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FrameworkFolder>netcoreapp2.1</FrameworkFolder>
+
+    <SymbioticTSExe>dotnet "$(MSBuildThisFileDirectory)..\..\tools\$(FrameworkFolder)\SymbioticTS.Cli.dll"</SymbioticTSExe>
+    <SymbioticTSOutputPath Condition="'$(SymbioticTSOutputPath)' == ''">$(MSBuildProjectDirectory)\generated-ts\</SymbioticTSOutputPath>
+  </PropertyGroup>
+</Project>

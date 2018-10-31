@@ -7,8 +7,8 @@ The project is currently in what I would consider early beta status.
 |  | Status |
 | ---- | ---- |
 | Build | [![Build Status](https://treasure.visualstudio.com/SymbioticTS/_apis/build/status/SymbioticTS-CI)](https://treasure.visualstudio.com/SymbioticTS/_build/latest?definitionId=15) |
-| SymbioticTS.Abstractions | [![SymbioticTS.Abstractions](https://img.shields.io/nuget/vpre/SymbioticTS.Abstractions.svg?style=for-the-badge)](https://www.nuget.org/packages/SymbioticTS.Abstractions) |
-| SymbioticTS.Build | [![SymbioticTS.Build](https://img.shields.io/nuget/vpre/SymbioticTS.Build.svg?style=for-the-badge)](https://www.nuget.org/packages/SymbioticTS.Build) |
+| SymbioticTS.Abstractions | [![SymbioticTS.Abstractions](https://img.shields.io/nuget/vpre/SymbioticTS.Abstractions.svg)](https://www.nuget.org/packages/SymbioticTS.Abstractions) |
+| SymbioticTS.MSBuild | [![SymbioticTS.MSBuild](https://img.shields.io/nuget/vpre/SymbioticTS.MSBuild.svg)](https://www.nuget.org/packages/SymbioticTS.MSBuild) |
 
 ## Goals
 
@@ -36,13 +36,11 @@ As you pass objects to a frontend, you lose some type fidelity due to the json s
 
 ## Workflow
 
-* Add the SymbioticTS.Build NuGet package to a project.
-* Configure output location using the `SymbioticTSOutputPath` MSBuild property.
+* Add the `SymbioticTS.Abstractions` NuGet package to a project.
 * Attribute a class with `TsDto` or `TsClass` or an interface with `TsInterface`.
+* Add the `SymbioticTS.MSBuild` NuGet package to the project to hook up MSBuild integration.
+* Configure output location using the `SymbioticTSOutputPath` MSBuild property.
 * Build
-  * Discovers the full closure of the built assembly dependencies (excluding .NET assemblies).
-  * Discover public or internal attributed classes and interfaces.
-  * Generate TypeScript objects for attributed and supporting .NET objects.
 
 ## Examples
 
