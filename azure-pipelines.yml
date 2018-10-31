@@ -26,6 +26,3 @@ steps:
     projects: '**/*.Tests.csproj'
     publishTestResults: true
     arguments: '--no-build --no-restore -c $(buildConfiguration)'
-
-- script: dotnet build Example\Example.sln --configuration $(buildConfiguration)
-  displayName: Build Example.sln ($(buildConfiguration))
