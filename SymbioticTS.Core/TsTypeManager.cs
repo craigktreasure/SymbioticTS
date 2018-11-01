@@ -1,7 +1,6 @@
 using SymbioticTS.Core.Visitors;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -146,7 +145,7 @@ namespace SymbioticTS.Core
 
         private static bool HasSymbioticTSAbstractionsReference(IEnumerable<AssemblyName> referencedAssemblies)
         {
-            return referencedAssemblies.Any(name => AssemblyNameComparer.Instance.Equals(name, abstractionsAssemblyName));
+            return referencedAssemblies.Any(assemblyName => assemblyName.Name == abstractionsAssemblyName.Name);
         }
 
         private static bool IsTypeScriptType(Type type)

@@ -7,13 +7,13 @@ namespace SymbioticTS.Core
 {
     internal sealed class StaticAssemblyResolver : IAssemblyResolver
     {
-        private readonly IReadOnlyDictionary<AssemblyName, string> assemblyNameToPathMap;
+        private readonly IReadOnlyDictionary<string, string> assemblyNameToPathMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StaticAssemblyResolver"/> class.
         /// </summary>
         /// <param name="assemblyNameToPathMap">The assembly name to path map.</param>
-        private StaticAssemblyResolver(IReadOnlyDictionary<AssemblyName, string> assemblyNameToPathMap)
+        private StaticAssemblyResolver(IReadOnlyDictionary<string, string> assemblyNameToPathMap)
         {
             this.assemblyNameToPathMap = assemblyNameToPathMap;
         }
@@ -25,7 +25,7 @@ namespace SymbioticTS.Core
         /// <returns>A <see cref="StaticAssemblyResolver"/>.</returns>
         public static StaticAssemblyResolver Create(IEnumerable<string> assemblyPaths)
         {
-            return new StaticAssemblyResolver(assemblyPaths.ToDictionary(AssemblyName.GetAssemblyName, AssemblyNameComparer.Instance));
+            return new StaticAssemblyResolver(assemblyPaths.ToDictionary(Path.GetFileNameWithoutExtension));
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace SymbioticTS.Core
         {
             resolvedAssembly = null;
 
-            if (this.assemblyNameToPathMap.TryGetValue(assemblyName, out string resolvedAssemblyPath))
+            if (this.assemblyNameToPathMap.TryGetValue(assemblyName.Name, out string resolvedAssemblyPath))
             {
                 resolvedAssembly = Assembly.LoadFrom(resolvedAssemblyPath);
                 return true;
