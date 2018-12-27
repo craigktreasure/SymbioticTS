@@ -15,6 +15,6 @@
     <file src="lib\**\*" target="lib/" />
     <file src="build\**\*" target="build/" />
 
-    <file src="$outputPath$\publish\**\*" target="tools/netcoreapp2.1/" />
+    <file src="$outputPath$\publish\**\*" target="tools/netcoreapp2.2/" />
   </files>
 </package>
