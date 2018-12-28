@@ -14,6 +14,8 @@ namespace SymbioticTS.Core
             [TsTypeSymbol.Date] = TsTypeSymbol.String
         };
 
+        private readonly HashSet<string> dtoInterfaceNameTracker = new HashSet<string>(StringComparer.Ordinal);
+
         private readonly ISymbolLoadOptions options;
 
         private readonly TsSymbolLookup symbolLookup;
@@ -222,11 +224,9 @@ namespace SymbioticTS.Core
             return result;
         }
 
-        private TsTypeSymbol MakeAndRegisterDtoInterface(TsTypeSymbol typeSymbol, DtoTypeSymbolMap dtoSymbolMap)
+        private string GenerateUniqueInterfaceName(TsTypeSymbol typeSymbol)
         {
-            TsTypeSymbol unwrappedTypeSymbol = typeSymbol.UnwrapArray(out int rank);
-
-            Type type = unwrappedTypeSymbol.TypeMetadata.Type;
+            TsTypeSymbol unwrappedTypeSymbol = typeSymbol.UnwrapArray(out _);
 
             string preparedName = unwrappedTypeSymbol.Name;
 
@@ -237,7 +237,33 @@ namespace SymbioticTS.Core
                 preparedName = preparedName.Substring(1);
             }
 
-            string interfaceName = $"I{preparedName}Dto";
+            string originalInterfaceName = $"I{preparedName}Dto";
+
+            if (this.dtoInterfaceNameTracker.Add(originalInterfaceName))
+            {
+                // The first name attempt is unique.
+                return originalInterfaceName;
+            }
+
+            string candidateName = originalInterfaceName;
+
+            for (int i = 1; this.dtoInterfaceNameTracker.Contains(candidateName); i++)
+            {
+                candidateName = originalInterfaceName + i;
+            }
+
+            this.dtoInterfaceNameTracker.Add(candidateName);
+
+            return candidateName;
+        }
+
+        private TsTypeSymbol MakeAndRegisterDtoInterface(TsTypeSymbol typeSymbol, DtoTypeSymbolMap dtoSymbolMap)
+        {
+            TsTypeSymbol unwrappedTypeSymbol = typeSymbol.UnwrapArray(out int rank);
+
+            Type type = unwrappedTypeSymbol.TypeMetadata.Type;
+
+            string interfaceName = this.GenerateUniqueInterfaceName(unwrappedTypeSymbol);
 
             List<TsTypeSymbol> interfaceTypeSymbols = unwrappedTypeSymbol.Interfaces
                 .Select(i => this.GetOrCreateDtoInterface(i, dtoSymbolMap))
