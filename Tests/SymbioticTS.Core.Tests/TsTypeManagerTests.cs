@@ -135,6 +135,30 @@ namespace SymbioticTS.Core.Tests
             ValidateDiscoveryReferenceProject(actualTypes);
         }
 
+        [Fact]
+        public void ResolveTypeSymbolsWithPotentialDtoNameCollision()
+        {
+            TsTypeManager manager = new TsTypeManager();
+
+            IReadOnlyList<Type> discoveredTypes = new[]
+            {
+                typeof(UnitTestReferenceLibrary.WithOverlap.Circle),
+                typeof(UnitTestReferenceLibrary.WithOverlap.ICircle),
+            };
+
+            IReadOnlyList<TsTypeSymbol> symbols = manager.ResolveTypeSymbols(discoveredTypes);
+
+            Assert.Equal(4, symbols.Count);
+
+            Assert.Equal(new[]
+            {
+                "Circle",
+                "ICircle",
+                "ICircleDto",
+                "ICircleDto1",
+            }, symbols.Select(x => x.Name).OrderBy(x => x));
+        }
+
         private static void ValidateDiscoveryReferenceProject(IReadOnlyList<Type> actualTypes)
         {
             Assert.NotNull(actualTypes);
