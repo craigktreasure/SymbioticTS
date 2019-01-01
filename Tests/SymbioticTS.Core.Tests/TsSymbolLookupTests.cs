@@ -20,6 +20,7 @@ namespace SymbioticTS.Core.Tests
         [InlineData(typeof(string), "string")]
         [InlineData(typeof(DateTime), "Date")]
         [InlineData(typeof(DateTimeOffset), "Date")]
+        [InlineData(typeof(Guid), "string")]
         [InlineData(typeof(int[]), "number[]")]
         [InlineData(typeof(int[][]), "number[][]")]
         [InlineData(typeof(IEnumerable<int>), "number[]")]
