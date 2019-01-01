@@ -3,7 +3,7 @@
  * All changes will be lost the next time the file is generated.
  */
 
-// tslint:disable:max-line-length
+/* tslint:disable:max-line-length */
 
 import { Color } from './Color';
 import { ShapeBorder } from './ShapeBorder';
