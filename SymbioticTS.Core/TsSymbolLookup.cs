@@ -22,6 +22,7 @@ namespace SymbioticTS.Core
             [typeof(string)] = TsTypeSymbol.String,
             [typeof(DateTime)] = TsTypeSymbol.Date,
             [typeof(DateTimeOffset)] = TsTypeSymbol.Date,
+            [typeof(Guid)] = TsTypeSymbol.String,
         };
 
         /// <summary>
