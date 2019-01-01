@@ -450,7 +450,7 @@ namespace SymbioticTS.Core
         private void WriteTsLintFileRules(SourceWriter writer)
         {
             writer
-                .WriteLine("// tslint:disable:max-line-length")
+                .WriteLine("/* tslint:disable:max-line-length */")
                 .WriteLine();
         }
     }
