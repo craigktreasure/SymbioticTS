@@ -4,7 +4,7 @@
     <NerdbankGitVersioningVersion>2.3.138</NerdbankGitVersioningVersion>
     <MicrosoftNETTestSdkVersion>16.0.1</MicrosoftNETTestSdkVersion>
     <XUnitVersion>2.4.1</XUnitVersion>
-    <MicrosoftBuildFrameworkVersion>15.7.179</MicrosoftBuildFrameworkVersion>
+    <MicrosoftBuildFrameworkVersion>15.9.20</MicrosoftBuildFrameworkVersion>
     <MicrosoftBuildUtilitiesCoreVersion>$(MicrosoftBuildFrameworkVersion)</MicrosoftBuildUtilitiesCoreVersion>
   </PropertyGroup>
  </Project>
