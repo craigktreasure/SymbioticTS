@@ -64,12 +64,12 @@ namespace SymbioticTS.Core
                 throw new ArgumentNullException(nameof(transformerOptions));
             }
 
-            using (AssemblyResolutionManager assemblyResolver = TsAssemblyResolutionManager.Create(inputAssemblyPath, transformerOptions))
+            using (IAssemblyResolver assemblyResolver = TsAssemblyResolutionManager.Create(inputAssemblyPath, transformerOptions))
             {
                 TsTypeManager typeManager = new TsTypeManager();
 
-                Assembly assembly = Assembly.LoadFrom(inputAssemblyPath);
-                IReadOnlyList<Assembly> assemblies = typeManager.DiscoverAssemblies(assembly);
+                Assembly assembly = assemblyResolver.Resolve(inputAssemblyPath);
+                IReadOnlyList<Assembly> assemblies = typeManager.DiscoverAssemblies(assembly, assemblyResolver);
                 IReadOnlyList<Type> types = typeManager.DiscoverTypes(assemblies);
                 IReadOnlyList<TsTypeSymbol> typeSymbols = typeManager.ResolveTypeSymbols(types);
 

@@ -30,13 +30,14 @@ namespace SymbioticTS.Core
         }
 
         /// <summary>
-        /// Discovers the assemblies that may contain relevant <see cref="Type"/> objects.
+        /// Discovers the assemblies that may contain relevant <see cref="Type" /> objects.
         /// </summary>
         /// <param name="assembly">The root assembly.</param>
-        /// <returns><see cref="IReadOnlyList{T}"/> of <see cref="Assembly"/>.</returns>
-        public IReadOnlyList<Assembly> DiscoverAssemblies(Assembly assembly)
+        /// <param name="assemblyResolver">The assembly resolver.</param>
+        /// <returns><see cref="IReadOnlyList{T}" /> of <see cref="Assembly" />.</returns>
+        public IReadOnlyList<Assembly> DiscoverAssemblies(Assembly assembly, IAssemblyResolver assemblyResolver)
         {
-            return DiscoverAllSupportingAssemblies(assembly).Distinct().Apply();
+            return DiscoverAllSupportingAssemblies(assembly, assemblyResolver).Distinct().Apply();
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace SymbioticTS.Core
             return results;
         }
 
-        private static IEnumerable<Assembly> DiscoverAllSupportingAssemblies(Assembly assembly)
+        private static IEnumerable<Assembly> DiscoverAllSupportingAssemblies(Assembly assembly, IAssemblyResolver assemblyResolver)
         {
             if (assembly.IsNetFramework())
             {
@@ -136,8 +137,8 @@ namespace SymbioticTS.Core
             }
 
             foreach (Assembly referencedAssembly in referencedAssemblies
-                .Select(Assembly.Load)
-                .SelectMany(DiscoverAllSupportingAssemblies))
+                .Select(assemblyResolver.Resolve)
+                .SelectMany(a => DiscoverAllSupportingAssemblies(a, assemblyResolver)))
             {
                 yield return referencedAssembly;
             }

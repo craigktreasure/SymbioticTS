@@ -13,25 +13,36 @@ namespace SymbioticTS.Core.Tests
         public void ResolveAssemblies()
         {
             TsTypeManager manager = new TsTypeManager();
+            Assembly assembly = typeof(AssemblyClassToken).Assembly;
 
-            IReadOnlyList<Assembly> actualAssemblies = manager.DiscoverAssemblies(typeof(AssemblyClassToken).Assembly);
+            IReadOnlyList<Assembly> actualAssemblies;
 
-            Assert.NotNull(actualAssemblies);
-            Assert.NotEmpty(actualAssemblies);
-            Assert.Equal(1, actualAssemblies.Count);
+            using (IAssemblyResolver assemblyResolver = TsAssemblyResolutionManager.Create(assembly.Location, SymbioticTransformerOptions.Default))
+            {
+                actualAssemblies = manager.DiscoverAssemblies(assembly, assemblyResolver);
+
+                Assert.NotNull(actualAssemblies);
+                Assert.NotEmpty(actualAssemblies);
+                Assert.Equal(1, actualAssemblies.Count);
+            }
         }
 
         [Fact]
         public void ResolveAssembliesWithReferenceAssembly()
         {
             TsTypeManager manager = new TsTypeManager();
+            Assembly assembly = typeof(DiscoveryReferenceProjectWithReference.AssemblyClassToken).Assembly;
 
-            IReadOnlyList<Assembly> actualAssemblies = manager.DiscoverAssemblies(
-                typeof(DiscoveryReferenceProjectWithReference.AssemblyClassToken).Assembly);
+            IReadOnlyList<Assembly> actualAssemblies;
 
-            Assert.NotNull(actualAssemblies);
-            Assert.NotEmpty(actualAssemblies);
-            Assert.Equal(2, actualAssemblies.Count);
+            using (IAssemblyResolver assemblyResolver = TsAssemblyResolutionManager.Create(assembly.Location, SymbioticTransformerOptions.Default))
+            {
+                actualAssemblies = manager.DiscoverAssemblies(assembly, assemblyResolver);
+
+                Assert.NotNull(actualAssemblies);
+                Assert.NotEmpty(actualAssemblies);
+                Assert.Equal(2, actualAssemblies.Count);
+            }
         }
 
         [Fact]
@@ -79,12 +90,18 @@ namespace SymbioticTS.Core.Tests
         public void ResolveTypesFromReferencedAssembly()
         {
             TsTypeManager manager = new TsTypeManager();
+            Assembly assembly = typeof(DiscoveryReferenceProjectWithReference.AssemblyClassToken).Assembly;
 
-            IEnumerable<Assembly> assemblies = manager.DiscoverAssemblies(
-                typeof(DiscoveryReferenceProjectWithReference.AssemblyClassToken).Assembly);
-            IReadOnlyList<Type> actualTypes = manager.DiscoverTypes(assemblies);
+            IReadOnlyList<Assembly> actualAssemblies;
 
-            ValidateDiscoveryReferenceProject(actualTypes);
+            using (IAssemblyResolver assemblyResolver = TsAssemblyResolutionManager.Create(assembly.Location, SymbioticTransformerOptions.Default))
+            {
+                actualAssemblies = manager.DiscoverAssemblies(assembly, assemblyResolver);
+
+                IReadOnlyList<Type> actualTypes = manager.DiscoverTypes(actualAssemblies);
+
+                ValidateDiscoveryReferenceProject(actualTypes);
+            }
         }
 
         [Fact]
