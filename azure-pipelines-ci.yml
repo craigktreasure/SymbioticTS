@@ -8,7 +8,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  dotnetSdkVersion: '2.2.101'
+  dotnetSdkVersion: '2.2.300'
   publishArtifacts: false
 
 steps:
