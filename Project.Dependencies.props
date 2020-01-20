@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <NerdbankGitVersioningVersion>3.0.28</NerdbankGitVersioningVersion>
+    <NerdbankGitVersioningVersion>3.0.50</NerdbankGitVersioningVersion>
     <MicrosoftNETTestSdkVersion>16.4.0</MicrosoftNETTestSdkVersion>
     <XUnitVersion>2.4.1</XUnitVersion>
     <MicrosoftBuildFrameworkVersion>16.4.0</MicrosoftBuildFrameworkVersion>
