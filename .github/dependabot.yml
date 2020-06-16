@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: '13:00'
+  open-pull-requests-limit: 10
+  reviewers:
+  - craigktreasure
+  assignees:
+  - craigktreasure
+  ignore:
+  - dependency-name: Microsoft.Build.Framework
+    versions:
+    - ">= 15.8.166.a, < 15.8.167"
+  - dependency-name: Microsoft.Build.Utilities.Core
+    versions:
+    - ">= 15.8.166.a, < 15.8.167"
